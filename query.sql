@@ -28,8 +28,7 @@ CREATE TABLE products (
 CREATE TABLE delivery (
 	id SERIAL PRIMARY KEY,
 	name VARCHAR(20) NOT NULL,
-	price MONEY NOT NULL DEFAULT 0,
-	order_no SERIAL REFERENCES orders
+	price MONEY NOT NULL DEFAULT 0
 );
 
 INSERT INTO users (full_name, date_of_birth, address, phone)
@@ -38,3 +37,13 @@ VALUES ('김영주', DATE '1990-04-30', '서울', 01021845200);
 INSERT INTO products (name, price, image)
 VALUES ('iPhone 12', 1500000, '{/images/product_image1.jpg, /images/product_image2.jpg}');
 
+INSERT INTO orders (user_id, product_id) VALUES(1, 1);
+
+INSERT INTO delivery (name) VALUES('무료배송');
+
+INSERT INTO delivery (name, price) VALUES('유료배송', 3000);
+
+SELECT * FROM users;
+SELECT * FROM products;
+SELECT * FROM orders;
+SELECT * FROM delivery;
