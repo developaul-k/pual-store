@@ -21,7 +21,7 @@ CREATE TABLE products (
 	id SERIAL PRIMARY KEY,
 	name VARCHAR(100) NOT NULL,
 	price MONEY NOT NULL DEFAULT 0,
-	image VARCHAR(200),
+	image VARCHAR(200)[],
 	created_at TIMESTAMP NOT NULL DEFAULT now()
 );
 
@@ -36,6 +36,5 @@ INSERT INTO users (full_name, date_of_birth, address, phone)
 VALUES ('김영주', DATE '1990-04-30', '서울', 01021845200);
 
 INSERT INTO products (name, price, image)
-VALUES ('iPhone 12', 1500000, '/images/product_image1.jpg');
+VALUES ('iPhone 12', 1500000, '{/images/product_image1.jpg, /images/product_image2.jpg}');
 
-SELECT price::numeric FROM products;
