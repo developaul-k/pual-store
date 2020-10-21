@@ -4,7 +4,10 @@ var db = require('../database');
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
-  res.render('index', { title: 'Express' });
+  const { user } = req.session;
+
+  if (!user) return res.redirect('/login');
+  res.render('index', { username: `${user.first_name} ${user.last_name}` });
 });
 
 module.exports = router;

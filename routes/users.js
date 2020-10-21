@@ -1,42 +1,27 @@
 const express = require('express');
 const router = express.Router();
-const url = require('url');
-const qs = require('querystring');
-const db = require('../database');
+const POOL = require('../database');
 
-/* GET users listing. */
-router.get('/', async function (req, res, next) {
-  try {
-    const clientRes = await db.query(`SELECT * FROM users`);
-    res.status(200).json({
-      data: clientRes.rows,
-    });
-  } catch (err) {
-    console.log(err);
-  }
-});
+const { QUERY } = POOL;
 
 router.post('/', async function (req, res, next) {
-  const { email, password } = req.body;
+  const { email } = req.body;
   try {
-    const { rows } = await db.query(
-      `SELECT * FROM users WHERE email = '${email}'`
-    );
-
-    const [user] = rows;
+    const [user] = await QUERY`SELECT * FROM users WHERE email = ${email}`;
 
     if (user) {
-      return res.status(200).json({
-        data: { user },
-      });
+      req.session.user = user;
+      return res.json({ data: user });
     }
 
-    res.status(200).json({
+    res.json({
       data: {},
+      message: '이메일 또는 비밀번호가 일치 하지 않습니다.',
     });
   } catch (err) {
     console.log(err);
   }
 });
+
 
 module.exports = router;

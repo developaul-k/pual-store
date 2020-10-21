@@ -2,10 +2,12 @@ var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
+var session = require('express-session');
 var logger = require('morgan');
 var sassMiddleware = require('node-sass-middleware');
 
 var indexRouter = require('./routes/index');
+var loginRouter = require('./routes/login');
 var usersRouter = require('./routes/users');
 
 var app = express();
@@ -17,7 +19,15 @@ app.set('view engine', 'hbs');
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
+app.use(cookieParser('secret_key'));
+app.use(
+  session({
+    secret: 'secret_key',
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false },
+  })
+);
 app.use(
   sassMiddleware({
     src: path.join(__dirname, 'public'),
@@ -29,6 +39,7 @@ app.use(
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
+app.use('/login', loginRouter);
 app.use('/users', usersRouter);
 
 // catch 404 and forward to error handler

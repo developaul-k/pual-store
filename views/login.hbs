@@ -1,0 +1,71 @@
+<div class="login">
+  <form class="form">
+    <div class="login-box">
+      <div class="h1">로그인</div>
+      <div class="column">
+        <input type="text" name="email" class="input" placeholder="이메일을 입력해주세요.">
+      </div>
+      <div class="column">
+        <input type="password" name="password" class="input" placeholder="비밀번호를 입력해주세요.">
+      </div>
+      <div class="column">
+        <button type="submit" class="button">로그인</button>
+      </div>
+      <div class="column">
+        <button type="button" class="button">회원가입</button>
+      </div>
+      <div class="column">
+        <span class="error-message"></span>
+      </div>
+    </div>
+  </form>
+</div>
+
+<script>
+  const errMsg = msg => go(
+    $.qs('.error-message'),
+    $.text(msg),
+    $.show);
+
+  go(
+    $.qs('.form'),
+    $.on('submit', (e) => {
+      e.preventDefault();
+
+      const { currentTarget: {
+        email: { value: emailValue },
+        password: { value: passwordValue }
+      } } = e;
+
+      if (emailValue == '' || passwordValue == '') return errMsg('이메일 또는 비밀번호를 입력해주세요!');
+
+      go(
+        fetch('/users', {
+          method: 'POST',
+          headers: {
+            'Content-type': 'application/json'
+          },
+          body: JSON.stringify({
+            email: emailValue,
+            password: passwordValue
+          }),
+        }),
+        res => res.json(),
+        ({ data: { email }, message }) => {
+          if (email) {
+            window.location.href = "http://localhost:3000";
+          } else {
+            errMsg(message);
+          }
+        });
+    })
+  );
+
+  go(
+    $.qsa('.input'),
+    $.on('focus', () => go(
+      $.qsa('.error-message'),
+      each(el => el.style.display == 'block' && $.hide(el))
+    ))
+  );
+</script>
