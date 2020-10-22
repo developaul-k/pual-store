@@ -6,8 +6,8 @@ var db = require('../database');
 router.get('/', function (req, res, next) {
   const { user } = req.session;
 
-  if (!user) return res.redirect('/login');
-  res.render('index', { username: `${user.first_name} ${user.last_name}` });
+  if (!user) return res.redirect('/signin');
+  res.render('index', { username: `${user.full_name}` });
 });
 
 module.exports = router;

@@ -15,18 +15,18 @@ a {
   font-size: 38px;
   font-weight: 500; }
 
-.login {
+.sign-container {
   display: flex;
   justify-content: center;
   align-items: center; }
 
-.login-box {
+.round-box {
   padding: 50px;
   width: 400px;
   border: 1px solid #ccc;
   border-radius: 10px;
   text-align: center; }
-  .login-box > *:nth-child(2) {
+  .round-box > *:nth-child(2) {
     margin-top: 20px; }
 
 .input {
@@ -50,5 +50,24 @@ a {
   margin-top: 20px;
   font-size: 12px;
   color: red; }
+
+.cart {
+  width: 100%;
+  border-collapse: collapse; }
+  .cart th,
+  .cart td {
+    padding: 16px; }
+  .cart thead th {
+    background-color: #000;
+    color: #fff; }
+  .cart .right {
+    text-align: right; }
+  .cart .center {
+    text-align: center; }
+  .cart .image {
+    width: 150px;
+    height: 150px; }
+    .cart .image img {
+      max-height: 100%; }
 
 /*# sourceMappingURL=style.css.map */
