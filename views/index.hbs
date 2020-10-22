@@ -8,6 +8,16 @@
   $.on('click', () => (console.log('click'), logout()))($.qs('.logout'));
 
   async function logout() {
-    await fetch('/users/logout');
+    try {
+      const result = await fetch('/users/logout', {
+        method: 'POST',
+      });
+      const { redirectTo } = await result.json();
+
+      if (redirectTo) window.location.href = `http://localhost:3000${redirectTo}`;
+
+    } catch (err) {
+      console.log(err);
+    }
   }
 </script>

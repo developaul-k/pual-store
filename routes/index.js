@@ -6,6 +6,8 @@ var db = require('../database');
 router.get('/', function (req, res, next) {
   const { user } = req.session;
 
+  console.log('home: ', user);
+
   if (!user) return res.redirect('/signin');
   res.render('index', { username: `${user.full_name}` });
 });

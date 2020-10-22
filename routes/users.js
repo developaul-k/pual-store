@@ -23,9 +23,14 @@ router.post('/', async function (req, res, next) {
   }
 });
 
-router.get('/logout', function (req, res, next) {
+router.post('/logout', function (req, res, next) {
   req.session.destroy();
-  res.redirect('/signin');
+  res.clearCookie('sid');
+
+  res.send({
+    redirectTo: '/signin',
+    msg: '로그아웃 완료',
+  });
 });
 
 module.exports = router;
