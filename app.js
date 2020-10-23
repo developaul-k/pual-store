@@ -17,7 +17,7 @@ var app = express();
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
-app.set('etag', false)
+app.set('etag', false);
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -25,6 +25,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser('secret_key'));
 app.use(
   session({
+    ket: 'sid',
     secret: 'secret_key',
     resave: false,
     saveUninitialized: true,
