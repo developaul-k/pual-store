@@ -2,10 +2,16 @@ var express = require('express');
 var router = express.Router();
 
 const { QUERY } = require('../database');
+<<<<<<< HEAD
 const { isLoggedIn } = require('../middlewares');
 
 /* GET home page. */
 router.get('/', isLoggedIn, async function (req, res, next) {
+=======
+
+/* GET home page. */
+router.get('/', async function (req, res, next) {
+>>>>>>> d35cbee... updated products
   const { user } = req.session;
   if (!user) return res.redirect('/signin');
 

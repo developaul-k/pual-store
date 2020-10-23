@@ -17,6 +17,8 @@ const app = express();
 passportConfig();
 app.set('etag', false);
 
+app.set('etag', false);
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
@@ -47,6 +49,19 @@ app.use(
 );
 
 app.use(express.static(path.join(__dirname, 'public')));
+
+// no-cache middleware
+app.use(function (req, res, next) {
+  res.setHeader('Surrogate-Control', 'no-store');
+  res.setHeader(
+    'Cache-Control',
+    'no-store, no-cache, must-revalidate, proxy-revalidate'
+  );
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
+
+  next();
+});
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
