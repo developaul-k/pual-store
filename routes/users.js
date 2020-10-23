@@ -11,7 +11,7 @@ router.post('/', async function (req, res, next) {
 
     if (user) {
       req.session.user = user;
-      return res.json({ data: user });
+      return res.json({ data: user, token: user.id });
     }
 
     res.json({
@@ -23,14 +23,11 @@ router.post('/', async function (req, res, next) {
   }
 });
 
-router.post('/logout', function (req, res, next) {
+router.get('/logout', function (req, res, next) {
   req.session.destroy();
   res.clearCookie('sid');
 
-  res.send({
-    redirectTo: '/signin',
-    msg: '로그아웃 완료',
-  });
+  return res.status(200).redirect('/signin');
 });
 
 module.exports = router;

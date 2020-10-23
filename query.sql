@@ -14,7 +14,7 @@ CREATE TABLE users (
 CREATE TABLE products (
 	id SERIAL PRIMARY KEY,
 	name VARCHAR(100) NOT NULL,
-	price MONEY NOT NULL DEFAULT 0,
+	price INT NOT NULL DEFAULT 0,
 	image VARCHAR(200)[],
 	created_at TIMESTAMP NOT NULL DEFAULT now(),
 	updated_at TIMESTAMP NOT NULL DEFAULT now()
@@ -45,10 +45,10 @@ VALUES ('Mac mini', 1800000, '{/images/product_image5.jpg, /images/product_image
 INSERT INTO products (name, price, image)
 VALUES ('Macbook Pro 16', 3300000, '{/images/product_image9.jpg, /images/product_image10.jpg}');
 
-UPDATE products SET image = '{https://store.storeimages.cdn-apple.com/8756/as-images.apple.com/is/imac-215-selection-hero-201706?wid=892&hei=820&&qlt=80&.v=1570231130149, https://store.storeimages.cdn-apple.com/8756/as-images.apple.com/is/imac-215-selection-hero-201706?wid=892&hei=820&&qlt=80&.v=1570231130149}', updated_at = now() WHERE id = 3;
+UPDATE products SET image = '{https://www.apple.com/v/macbook-pro-16/b/images/meta/og__csakh451i0eq_large.png}', updated_at = now() WHERE id = 5;
 
 SELECT * FROM users;
-SELECT * FROM products;
+SELECT * FROM products ORDER BY updated_at DESC;
 SELECT * FROM cart;
 
 

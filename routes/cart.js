@@ -1,10 +1,13 @@
 var express = require('express');
 var router = express.Router();
 
-const { SQL, ASSOCIATE, QUERY } = require('../database');
+const { QUERY } = require('../database');
 
 /* GET home page. */
 router.get('/', async function (req, res, next) {
+  const { user } = req.session;
+  if (!user) return res.redirect('/signin');
+
   try {
     const {
       user: { id },
@@ -16,6 +19,7 @@ router.get('/', async function (req, res, next) {
       WHERE c.user_id = ${id}
       AND p.id = c.product_id
     `;
+    res.header('Cache-Control', 'no-store');
     res.render('cart', { cart });
   } catch (err) {
     console.log(err);

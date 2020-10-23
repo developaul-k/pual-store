@@ -1,15 +1,15 @@
 var express = require('express');
 var router = express.Router();
-var db = require('../database');
+
+const POOL = require('../database');
+const { QUERY } = POOL;
 
 /* GET home page. */
-router.get('/', function (req, res, next) {
+router.get('/', async function (req, res, next) {
   const { user } = req.session;
-
-  console.log('home: ', user);
-
   if (!user) return res.redirect('/signin');
-  res.render('index', { username: `${user.full_name}` });
+  const products = await QUERY`SELECT id, name, price::numeric, image, created_at FROM products ORDER BY updated_at DESC`;
+  res.render('index', { username: `${user.full_name}`, products });
 });
 
 module.exports = router;

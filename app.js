@@ -14,10 +14,11 @@ var cartRouter = require('./routes/cart');
 
 var app = express();
 
+app.set('etag', false);
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
-app.set('etag', false);
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -25,11 +26,10 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser('secret_key'));
 app.use(
   session({
-    ket: 'sid',
+    key: 'sid',
     secret: 'secret_key',
     resave: false,
     saveUninitialized: true,
-    // cookie: { secure: false },
   })
 );
 app.use(
@@ -40,7 +40,21 @@ app.use(
     sourceMap: true,
   })
 );
+
 app.use(express.static(path.join(__dirname, 'public')));
+
+// no-cache middleware
+app.use(function (req, res, next) {
+  res.setHeader('Surrogate-Control', 'no-store');
+  res.setHeader(
+    'Cache-Control',
+    'no-store, no-cache, must-revalidate, proxy-revalidate'
+  );
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
+
+  next();
+});
 
 app.use('/', indexRouter);
 app.use('/signin', signinRouter);

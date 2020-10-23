@@ -2,22 +2,37 @@
   <h1>안녕하세요! {{ username }} 님</h1>
   <a href="/cart">장바구니</a>
   <button type="button" class="logout">로그아웃</button>
+
+  <h2 class="h2">신제품</h2>
+  <ul class="product-list">
+    {{#products}}
+    <li class="product-item" data-id="{{ id }}">
+      <div class="product-image">
+        {{#image}}
+        {{#if @first}}
+        <img src="{{ this }}" alt="">
+        {{/if}}
+        {{/image}}
+      </div>
+      <div class="product-name">{{ name }}</div>
+      <div class="product-price">{{ price }}</div>
+      <button class="button cart">장바구니 담기</button>
+    </li>
+    {{/products}}
+  </ul>
 </div>
 
 <script>
-  $.on('click', () => (console.log('click'), logout()))($.qs('.logout'));
-
-  async function logout() {
+  $.on('click', async function logout() {
     try {
-      const result = await fetch('/users/logout', {
-        method: 'POST',
-      });
-      const { redirectTo } = await result.json();
-
-      if (redirectTo) window.location.href = `http://localhost:3000${redirectTo}`;
+      go(
+        fetch('/users/logout'),
+        ({ redirected, url }) => {
+          if (redirected) location.replace(url);
+        });
 
     } catch (err) {
       console.log(err);
     }
-  }
+  })($.qs('.logout'));
 </script>

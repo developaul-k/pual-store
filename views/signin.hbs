@@ -41,7 +41,7 @@
       if (emailValue == '' || passwordValue == '') return errMsg('이메일 또는 비밀번호를 입력해주세요!');
 
       go(
-        fetch('/users', {
+        fetch('/signin', {
           method: 'POST',
           headers: {
             'Content-type': 'application/json'
@@ -52,13 +52,7 @@
           }),
         }),
         res => res.json(),
-        ({ data: { email }, message }) => {
-          if (email) {
-            window.location.href = "http://localhost:3000";
-          } else {
-            errMsg(message);
-          }
-        });
+        ({ redirectTo }) => location.replace(`http://localhost:3000${redirectTo}`));
     })
   );
 
