@@ -1,19 +1,20 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var session = require('express-session');
-var logger = require('morgan');
-var sassMiddleware = require('node-sass-middleware');
+const createError = require('http-errors');
+const express = require('express');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const session = require('express-session');
+const logger = require('morgan');
+const passport = require('passport');
+const sassMiddleware = require('node-sass-middleware');
+const passportConfig = require('./passport');
 
-var indexRouter = require('./routes/index');
-var signinRouter = require('./routes/signin');
-var signupRouter = require('./routes/signup');
-var usersRouter = require('./routes/users');
-var cartRouter = require('./routes/cart');
+const indexRouter = require('./routes/index');
+const usersRouter = require('./routes/users');
+const cartRouter = require('./routes/cart');
+const authRouter = require('./routes/auth');
 
-var app = express();
-
+const app = express();
+passportConfig();
 app.set('etag', false);
 
 // view engine setup
@@ -32,6 +33,10 @@ app.use(
     saveUninitialized: true,
   })
 );
+
+app.use(passport.initialize());
+app.use(passport.session());
+
 app.use(
   sassMiddleware({
     src: path.join(__dirname, 'public'),
@@ -43,24 +48,10 @@ app.use(
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-// no-cache middleware
-app.use(function (req, res, next) {
-  res.setHeader('Surrogate-Control', 'no-store');
-  res.setHeader(
-    'Cache-Control',
-    'no-store, no-cache, must-revalidate, proxy-revalidate'
-  );
-  res.setHeader('Pragma', 'no-cache');
-  res.setHeader('Expires', '0');
-
-  next();
-});
-
 app.use('/', indexRouter);
-app.use('/signin', signinRouter);
 app.use('/users', usersRouter);
 app.use('/cart', cartRouter);
-app.use('/signup', signupRouter);
+app.use('/auth', authRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

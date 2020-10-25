@@ -1,5 +1,5 @@
 <div class="sign-container login">
-  <form class="form">
+  <form class="form" method="POST" action="/auth/signin">
     <div class="round-box">
       <div class="h1">로그인</div>
       <div class="column">
@@ -27,7 +27,7 @@
     $.qs('.error-message'),
     $.text(msg),
     $.show);
-
+  /*
   go(
     $.qs('.form'),
     $.on('submit', (e) => {
@@ -55,6 +55,7 @@
         ({ redirectTo }) => location.replace(`http://localhost:3000${redirectTo}`));
     })
   );
+    */
 
   go(
     $.qsa('.input'),
