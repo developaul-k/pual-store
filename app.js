@@ -15,9 +15,6 @@ const authRouter = require('./routes/auth');
 
 const app = express();
 passportConfig();
-app.set('etag', false);
-
-app.set('etag', false);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -29,10 +26,13 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser('secret_key'));
 app.use(
   session({
-    key: 'sid',
     secret: 'secret_key',
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false,
+    cookie: {
+      httpOnly: true,
+      secure: false,
+    },
   })
 );
 
