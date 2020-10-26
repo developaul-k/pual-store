@@ -28,12 +28,12 @@ module.exports = () => {
         try {
           const [
             user,
-          ] = await QUERY`SELECT * FROM users WHERE email = ${email}`;
+          ] = await QUERY`SELECT * FROM users WHERE email = ${email} AND password = ${password}`;
 
           if (user) {
             return done(null, user);
           } else {
-            return done(null, false, { message: 'Incorrect username.' });
+            return done(null, false, { message: '아이디 또는 비밀번호가 일치 하지 않습니다.' });
           }
         } catch (err) {
           return done(err);

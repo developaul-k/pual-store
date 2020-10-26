@@ -4,8 +4,9 @@ DROP TABLE cart;
 
 CREATE TABLE users (
 	id SERIAL PRIMARY KEY,
+	email VARCHAR(200) UNIQUE NOT NULL,
+	password VARCHAR(200) NOT NULL,
 	full_name VARCHAR(50) NOT NULL,
-	email VARCHAR(200) NOT NULL,
 	address VARCHAR(200) NOT NULL,
 	phone VARCHAR(13) NOT NULL,
 	date_of_birth TIMESTAMP NOT NULL
@@ -24,14 +25,14 @@ CREATE TABLE cart (
 	id SERIAL PRIMARY KEY,
 	user_id SERIAL REFERENCES users ON DELETE CASCADE,
 	product_id SERIAL REFERENCES products ON DELETE CASCADE,
-	amount NUMERIC DEFAULT 0
+	amount NUMERIC DEFAULT 1
 );
 
-INSERT INTO users (full_name, email, date_of_birth, address, phone)
-VALUES ('김영주', 'yjk@marpple.com', DATE '1990-04-30', '서울', '010-2184-5200');
+INSERT INTO users (full_name, email, password, date_of_birth, address, phone)
+VALUES ('김영주', 'yjk@marpple.com', '123', DATE '1990-04-30', '서울', '010-2184-5200');
 
 INSERT INTO products (name, price, image)
-VALUES ('iPhone 12', 1500000, '{/images/product_image1.jpg, /images/product_image2.jpg}');
+VALUES ('iPhone 12 Pro', 2000000, '{/images/iphone-12-pro-gold-hero.png}');
 
 INSERT INTO products (name, price, image)
 VALUES ('iPhone 12 Pro', 2000000, '{/images/product_image3.jpg, /images/product_image4.jpg}');
@@ -45,7 +46,7 @@ VALUES ('Mac mini', 1800000, '{/images/product_image5.jpg, /images/product_image
 INSERT INTO products (name, price, image)
 VALUES ('Macbook Pro 16', 3300000, '{/images/product_image9.jpg, /images/product_image10.jpg}');
 
-UPDATE products SET image = '{https://www.apple.com/v/macbook-pro-16/b/images/meta/og__csakh451i0eq_large.png}', updated_at = now() WHERE id = 5;
+UPDATE products SET image = '{https://store.storeimages.cdn-apple.com/8756/as-images.apple.com/is/iphone-12-family-select-2020?wid=882&amp;hei=1058&amp;fmt=jpeg&amp;qlt=80&amp;op_usm=0.5,0.5&amp;.v=1601844983000}', updated_at = now() WHERE id = 1;
 
 SELECT * FROM users;
 SELECT * FROM products ORDER BY updated_at DESC;
@@ -64,8 +65,8 @@ INSERT INTO users (full_name, email, date_of_birth, address, phone)
 VALUES ('개발자', 'developer@marpple.com', DATE '1985-01-01', '경기도', 01059399293);
 
 -- 2. 장바구니 상품 리스트 가져오기
-SELECT p.id, p.name, p.price, c.amount, p.image
-FROM cart c, products p WHERE c.user_id = 1 AND c.product_id = p.id;
+SELECT DISTINCT p.id, p.name, p.price, sum(c.amount) as amounts, p.image
+FROM cart c, products p WHERE c.user_id = 1 AND c.product_id = p.id GROUP BY p.id;
 
 --SELECT p.id, p.name, p.price, c.amount, p.image
 --FROM cart c INNER JOIN products p ON (c.user_id = 1 AND c.product_id = p.id);

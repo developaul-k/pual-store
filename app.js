@@ -14,11 +14,13 @@ const cartRouter = require('./routes/cart');
 const authRouter = require('./routes/auth');
 
 const app = express();
+
 passportConfig();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'hbs');
+app.set('view engine', 'ejs');
+app.engine('html', require('ejs').renderFile);
 
 app.use(logger('dev'));
 app.use(express.json());
