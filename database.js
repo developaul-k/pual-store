@@ -4,6 +4,7 @@ const POOL = CONNECT({
   host: 'localhost',
   user: 'pual',
   database: 'express',
+  port: 5432,
 });
 
 module.exports = POOL;
