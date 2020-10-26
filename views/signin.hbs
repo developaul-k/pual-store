@@ -52,7 +52,10 @@
           }),
         }),
         res => res.json(),
-        ({ redirectTo }) => location.replace(`http://localhost:3000${redirectTo}`));
+        ({ redirectTo, data: { id }, message }) => {
+          if (id) return location.replace(`http://localhost:3000${redirectTo}`);
+          errMsg(message);
+        });
     })
   );
 
@@ -63,4 +66,47 @@
       each(el => el.style.display == 'block' && $.hide(el))
     ))
   );
+
+
+  /*
+    *
+    **
+    ***
+    ****
+    *****
+  */
+
+  const prange = (l, start = 0) => {
+    let res = [];
+    let i = start;
+    while (i < (l + start)) {
+      res.push(i);
+      ++i;
+    };
+    return res;
+  };
+
+  go(
+    prange(5, 1),
+    map(a => go(
+      prange(a),
+      map(b => '*'),
+      reduce((a, b) => a + b)
+    )),
+    reduce((a, b) => a + '\n' + b),
+    console.log
+  )
+  /*const arr1 = [
+    [1],
+    [1, 2],
+    [1, 2, 3],
+    [1, 2, 3, 4],
+    [1, 2, 3, 4, 5]
+  ];
+
+  const arr2 = arr1.map(a => a.map(b => '*'));
+  const arr3 = arr2.map(a => a.reduce((a, b) => a + b));
+  const arr4 = arr3.reduce((a, b) => `${a}\n${b}`)
+
+  console.log(arr4);*/
 </script>

@@ -9,6 +9,8 @@ router.post('/', async function (req, res, next) {
   try {
     const [user] = await QUERY`SELECT * FROM users WHERE email = ${email}`;
 
+    console.log('로그인 유저 정보: ', user);
+
     if (user) {
       req.session.user = user;
       return res.json({ data: user, redirectTo: '/' });
