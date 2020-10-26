@@ -9,7 +9,11 @@
 </head>
 
 <body>
+  {{#if isLoggedIn}}
+  <a href="/auth/signout" class="logout">로그아웃</a>
+  {{/if}}
   {{{body}}}
+
 </body>
 
 </html>

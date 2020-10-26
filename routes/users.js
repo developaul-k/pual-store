@@ -26,8 +26,7 @@ router.post('/', async function (req, res, next) {
 router.get('/logout', function (req, res, next) {
   req.session.destroy();
   res.clearCookie('sid');
-
-  return res.status(200).redirect('/signin');
+  res.status(200).redirect('/signin');
 });
 
 module.exports = router;

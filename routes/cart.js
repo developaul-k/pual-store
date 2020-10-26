@@ -1,17 +1,14 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
 
 const { QUERY } = require('../database');
+const { isLoggedIn } = require('../middlewares');
 
 /* GET home page. */
-router.get('/', async function (req, res, next) {
-  const { user } = req.session;
-  if (!user) return res.redirect('/signin');
-
+router.get('/', isLoggedIn, async function (req, res, next) {
   try {
-    const {
-      user: { id },
-    } = req.session;
+    console.log(req.session.passport);
+    const { user: id } = req.session.passport;
 
     const cart = await QUERY`
       SELECT c.amount, p.name, (p.price::numeric * c.amount) as price, p.image
@@ -19,7 +16,7 @@ router.get('/', async function (req, res, next) {
       WHERE c.user_id = ${id}
       AND p.id = c.product_id
     `;
-    res.header('Cache-Control', 'no-store');
+    // res.header('Cache-Control', 'no-store');
     res.render('cart', { cart });
   } catch (err) {
     console.log(err);
