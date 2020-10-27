@@ -1,36 +1,71 @@
 const express = require('express');
 const router = express.Router();
 
+const _ = require('fxjs/Strict');
+
 const { QUERY, VALUES } = require('../database');
+
 const { isLoggedIn } = require('../middlewares');
-const layout = require('../views/layout');
-const cart = require('../views/cart');
 
-/* GET home page. */
-router.get('/', isLoggedIn, async function (req, res, next) {
-  try {
-    const { user: id } = req.session.passport;
+const renderCart = (cart) => {
+  return `
+    <a href="javascript:history.back()">뒤로가기</a>
+    <table class="cart">
+      <thead>
+        <tr>
+          <th></th>
+          <th></th>
+          <th>상품명</th>
+          <th>금액</th>
+          <th>수량</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${_.map(
+          ({ id, name, price, amounts, image }) => `
+            <tr data-id="${id}">
+              <td>
+                <input type="checkbox" />
+              </td>
+              <td class="image">
+                ${_.map((src) => `<img src="${src}" alt="${name}" />`, image)}
+              </td>
+              <td>${name}</td>
+              <td class="right">${price}</td>
+              <td class="center">${amounts}</td>
+            </tr>
+          `,
+          cart
+        )}
+      </tbody>
+    </table>
+  `;
+};
 
-    const cartItem = await QUERY`
-      SELECT DISTINCT p.id, p.name, p.price, sum(c.amount) as amounts, p.image
-      FROM cart c, products p WHERE c.user_id = ${id} AND p.id = c.product_id GROUP BY p.id;
-    `;
+router.get('/', isLoggedIn, function (req, res, next) {
+  const { user: user_id } = req.session.passport;
 
-    res.send(layout('cart', cart({ cart: cartItem })));
-  } catch (err) {
+  _.go(
+    QUERY`
+        SELECT DISTINCT p.id, p.name, p.price, sum(c.amount) as amounts, p.image
+        FROM cart c, products p WHERE c.user_id = ${user_id} AND p.id = c.product_id GROUP BY p.id;
+      `,
+    renderCart,
+    (body) => res.render('index', { title: '장바구니', body })
+  ).catch((err) => {
     console.log(err);
     next();
-  }
+  });
 });
 
-router.post('/add', isLoggedIn, async function (req, res, next) {
-  try {
-    await QUERY`INSERT INTO cart ${VALUES(req.body)}`;
-    res.send({ data: 'ok' });
-  } catch (err) {
+router.post('/add', isLoggedIn, function (req, res, next) {
+  _.go(
+    QUERY`INSERT INTO cart ${VALUES(req.body)}`,
+    (_) => res.send({ data: 'ok' })
+  ).catch((err) => {
     console.log(err);
     next(err);
-  }
+  });
 });
 
 module.exports = router;

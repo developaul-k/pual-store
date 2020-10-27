@@ -2,7 +2,7 @@ const { PostgreSQL } = require('fxsql');
 const { CONNECT } = PostgreSQL;
 const POOL = CONNECT({
   host: 'localhost',
-  user: 'pual',
+  user: 'paul',
   database: 'express',
   port: 5432,
 });

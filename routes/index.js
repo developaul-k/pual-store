@@ -15,9 +15,10 @@ router.get('/', isLoggedIn, async function (req, res, next) {
     FROM products ORDER BY updated_at DESC
   `;
 
-  const [user] = await QUERY`SELECT full_name FROM users WHERE id = ${user_id}`;
+  const [user] = await QUERY`SELECT id, full_name FROM users WHERE id = ${user_id}`;
 
-  const body = `<div>
+  const renderHome = ({ user, products }) => `
+    <div>
       <h1>안녕하세요! ${user.full_name} 님</h1>
       <a href="/cart">장바구니</a>
       <a href="/auth/signout">로그아웃</a>
@@ -50,7 +51,9 @@ router.get('/', isLoggedIn, async function (req, res, next) {
         .addEventListener('click', ({ currentTarget }) => {
           fetch('/cart/add', {
             method: 'POST',
-            body: JSON.stringify({ user_id: ${user_id}, product_id: currentTarget.closest('.product-item').dataset.id }),
+            body: JSON.stringify({ user_id: ${
+              user.id
+            }, product_id: currentTarget.closest('.product-item').dataset.id }),
             headers:{
               'Content-Type': 'application/json'
             }
@@ -60,9 +63,9 @@ router.get('/', isLoggedIn, async function (req, res, next) {
       })
     }
     </script>
-    `;
+  `;
 
-  res.render('index', { body });
+  res.render('index', { title: 'Home', body: renderHome({ user, products }) });
 });
 
 module.exports = router;
