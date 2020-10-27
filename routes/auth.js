@@ -1,8 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const passport = require('passport');
+const _ = require('fxjs/Strict');
+
 const { QUERY, VALUES } = require('../database');
 const { isNotLoggedIn, isLoggedIn } = require('../middlewares');
+const { hash } = require('../verify');
 
 const renderSignin = () => `
   <div class="sign-container login">
@@ -77,7 +80,6 @@ router.get('/signin', isNotLoggedIn, async function (req, res, next) {
 });
 
 router.post('/signin', isNotLoggedIn, (req, res, next) => {
-  console.log('/signin: isNotLoggedIn');
   passport.authenticate('local', (authError, user, info) => {
     if (authError) {
       console.error(authError);
@@ -101,9 +103,13 @@ router.get('/signup', isNotLoggedIn, function (req, res, next) {
   res.render('index', { title: '회원가입', body: renderSignup() });
 });
 
-router.post('/signup', isNotLoggedIn, async function (req, res, next) {
+router.post('/signup', isNotLoggedIn, async function (
+  { body, body: { email, password } },
+  res,
+  next
+) {
   try {
-    const existUser = await QUERY`SELECT * FROM users WHERE email = ${req.body.email}`;
+    const existUser = await QUERY`SELECT * FROM users WHERE email = ${email}`;
 
     if (existUser.length) {
       return res.send({
@@ -111,12 +117,13 @@ router.post('/signup', isNotLoggedIn, async function (req, res, next) {
       });
     }
 
-    await QUERY`INSERT INTO users ${VALUES(req.body)}`;
-
-    res.send({
-      redirectTo: '/auth/signin',
-      message: '회원가입 완료!',
-    });
+    _.go(
+      hash(password),
+      (password) => QUERY`INSERT INTO users ${VALUES({ ...body, password })}`,
+      res.send({
+        redirectTo: '/auth/signin?email=${email}',
+        message: '회원가입 완료!',
+      }));
   } catch (err) {
     console.log(err);
     next(err);
