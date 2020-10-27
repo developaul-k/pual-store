@@ -1,5 +1,17 @@
 const errMsg = (msg) => _.go($.qs('.error-message'), $.text(msg), $.show);
 
+if (location.search) {
+  _.go(
+    decodeURIComponent(location.search),
+    _.replace('?', ''),
+    _.split('&'),
+    L.map(_.split('=')),
+    _.each(([k, v]) => {
+      $.qs(`[name="${k}"]`).value = v;
+    })
+  );
+}
+
 _.go(
   $.qs('.form'),
   $.on('submit', (e) => {

@@ -121,9 +121,10 @@ router.post('/signup', isNotLoggedIn, async function (
       hash(password),
       (password) => QUERY`INSERT INTO users ${VALUES({ ...body, password })}`,
       res.send({
-        redirectTo: '/auth/signin?email=${email}',
+        redirectTo: `/auth/signin?email=${encodeURIComponent(email)}`,
         message: '회원가입 완료!',
-      }));
+      })
+    );
   } catch (err) {
     console.log(err);
     next(err);

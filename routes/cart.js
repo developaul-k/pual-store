@@ -21,7 +21,7 @@ const renderCart = (cart) => {
         </tr>
       </thead>
       <tbody>
-        ${_.map(
+        ${_.strMap(
           ({ id, name, price, amounts, image }) => `
             <tr data-id="${id}">
               <td>
@@ -47,7 +47,7 @@ router.get('/', isLoggedIn, function (req, res, next) {
 
   _.go(
     QUERY`
-        SELECT DISTINCT p.id, p.name, p.price, sum(c.amount) as amounts, p.image
+        SELECT DISTINCT p.id, p.name, sum(p.price) as price, sum(c.amount) as amounts, p.image
         FROM cart c, products p WHERE c.user_id = ${user_id} AND p.id = c.product_id GROUP BY p.id;
       `,
     renderCart,

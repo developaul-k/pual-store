@@ -43,8 +43,8 @@ _.go(
       }),
       (res) => res.json(),
       ({ redirectTo, message }) => {
-        console.log(redirectTo);
         if (redirectTo) {
+          alert(message);
           location.replace(redirectTo);
         } else {
           errMsg(message);

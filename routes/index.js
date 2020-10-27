@@ -15,7 +15,9 @@ router.get('/', isLoggedIn, async function (req, res, next) {
     FROM products ORDER BY updated_at DESC
   `;
 
-  const [user] = await QUERY`SELECT id, full_name FROM users WHERE id = ${user_id}`;
+  const [
+    user,
+  ] = await QUERY`SELECT id, full_name FROM users WHERE id = ${user_id}`;
 
   const renderHome = ({ user, products }) => `
     <div>
@@ -27,7 +29,7 @@ router.get('/', isLoggedIn, async function (req, res, next) {
       <ul class="product-list">
         ${
           products.length
-            ? _.map(
+            ? _.strMap(
                 ({ id, image, name, price }) => `
                 <li class="product-item" data-id="${id}">
                   <div class="product-image">
@@ -46,9 +48,11 @@ router.get('/', isLoggedIn, async function (req, res, next) {
     </div>
 
     <script>
-    if (document.querySelector('.button')) {
-      document.querySelector('.button')
-        .addEventListener('click', ({ currentTarget }) => {
+    const $button = document.querySelectorAll('.button');
+    if ($button) {
+      _.go(
+        $button,
+        _.each(el => el.addEventListener('click', ({ currentTarget }) => {
           fetch('/cart/add', {
             method: 'POST',
             body: JSON.stringify({ user_id: ${
@@ -60,7 +64,9 @@ router.get('/', isLoggedIn, async function (req, res, next) {
           })
           .then(res => res.json())
           .then(data => console.log(data))
-      })
+          .catch(err => console.log(err));
+      }, $button))
+      )
     }
     </script>
   `;
