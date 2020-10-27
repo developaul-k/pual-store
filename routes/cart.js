@@ -3,7 +3,7 @@ const router = express.Router();
 
 const _ = require('fxjs/Strict');
 
-const { QUERY, VALUES } = require('../database');
+const { QUERY, VALUES, ASSOCIATE, SQL } = require('../database');
 
 const { isLoggedIn } = require('../middlewares');
 
@@ -42,8 +42,19 @@ const renderCart = (cart) => {
   `;
 };
 
-router.get('/', isLoggedIn, function (req, res, next) {
+router.get('/', isLoggedIn, async function (req, res, next) {
   const { user: user_id } = req.session.passport;
+
+  try {
+    const test = await ASSOCIATE`
+      users ${SQL `WHERE id = 5`}
+        x products ${{ xtable: 'cart' }}
+    `;
+
+    console.log('test', test[0]._.products)
+  } catch(err) {
+    console.log(err);
+  }
 
   _.go(
     QUERY`
