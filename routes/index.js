@@ -51,7 +51,7 @@ router.get('/', isLoggedIn, async function (req, res, next) {
     _.go(
       $.qsa('.button'),
       $.on('click', ({ currentTarget }) => {
-        loadingCtrl()
+        $.trigger('open', $.qs('.loading'));
         fetch('/cart/add', {
           method: 'POST',
           body: JSON.stringify({ product_id: currentTarget.closest('.product-item').dataset.id }),
@@ -60,7 +60,7 @@ router.get('/', isLoggedIn, async function (req, res, next) {
           }
         })
         .then(res => res.json())
-        .then(data => (loadingCtrl('close'), console.log(data)))
+        .then(data => ($.trigger('close', $.qs('.loading')), console.log(data)))
         .catch(err => console.log(err));
       }));
     </script>

@@ -76,6 +76,8 @@ img {
   .cart thead th {
     background-color: #000;
     color: #fff; }
+  .cart .left {
+    text-align: left; }
   .cart .right {
     text-align: right; }
   .cart .center {

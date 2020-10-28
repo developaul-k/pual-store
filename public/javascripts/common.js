@@ -13,6 +13,3 @@ _.go(
     })
   ),
   $.append($.qs('body')));
-
-const loadingCtrl = (eventType = 'open') =>
-  $.qs('.loading').dispatchEvent(new Event(eventType));

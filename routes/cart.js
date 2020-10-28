@@ -16,7 +16,7 @@ const renderCart = (cart) => {
     <table class="cart">
       <thead>
         <tr>
-          <th></th>
+          <th class="left"><input type="checkbox" class="checkbox-all" checked /></th>
           <th></th>
           <th>상품명</th>
           <th>금액</th>
@@ -28,7 +28,7 @@ const renderCart = (cart) => {
           ({ id, name, price, amount, image }) => `
             <tr data-id="${id}">
               <td>
-                <input type="checkbox" checked />
+                <input type="checkbox" class="checkbox" checked />
               </td>
               <td class="image">
                 ${_.map((src) => `<img src="${src}" alt="${name}" />`, image)}
@@ -58,19 +58,18 @@ const renderCart = (cart) => {
     <button class="delete-cart" data-type="all" type="button" ${isDisabled}>전체 상품 삭제</button>
     <script>
       _.go(
-        $.qsa('[type="checkbox"]'),
-        $.on('change', ({ currentTarget }) => {
-          if ($.qsa('[type="checkbox"]:checked').length > 0) {
-            $.qs('.delete-cart').removeAttribute('disabled');
-          } else {
-            $.qs('.delete-cart').setAttribute('disabled', true);
-          }}));
+        $.qsa('.checkbox'),
+        $.on('change', () => _.go(
+          $.qsa('.checkbox:checked'),
+          ({ length }) => length > 0 ? $.removeAttr('disabled', $.qs('.delete-cart'))
+            : $.setAttr({ disabled: true }, $.qs('.delete-cart'))
+        )));
 
       _.go(
         $.qsa('.delete-cart'),
         $.on('click', ({ currentTarget }) => {
           const typeAll = currentTarget.getAttribute('data-type') == 'all';
-          const sel = typeAll ? '[type="checkbox"]' : '[type="checkbox"]:checked';
+          const sel = typeAll ? '.checkbox' : '.checkbox:checked';
           const message = typeAll ? '전체 상품을 삭제하시겠습니까?' : '선택한 상품을 삭제하시겠습니까?'
 
           if (confirm(message)) {
@@ -80,7 +79,7 @@ const renderCart = (cart) => {
               cart_ids => JSON.stringify({ cart_ids }));
 
             _.go(
-              loadingCtrl(),
+              $.trigger('open', $.qs('.loading')),
               _ => fetch('/cart/delete', {
                 headers: {
                   "Content-Type": "application/json"
@@ -91,16 +90,17 @@ const renderCart = (cart) => {
               res => res.json(),
               ({redirectTo}) => location.replace(redirectTo)
             ).catch(err => {
-              loadingCtrl('close');
+              $.trigger('close', $.qs('.loading'));
               console.log(err);
             })}}));
+
       _.go(
         $.qsa('select'),
         $.on('change', ({ currentTarget }) => _.go(
           currentTarget,
           $.find('option:checked'),
+          _.tap(_ => $.trigger('open', $.qs('.loading'))),
           ({ value: amount }) => {
-            loadingCtrl();
             const { id } = $.data($.closest('tr', currentTarget));
 
             fetch('/cart/update', {
