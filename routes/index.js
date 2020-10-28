@@ -48,26 +48,21 @@ router.get('/', isLoggedIn, async function (req, res, next) {
     </div>
 
     <script>
-    const $button = document.querySelectorAll('.button');
-    if ($button) {
-      _.go(
-        $button,
-        _.each(el => el.addEventListener('click', ({ currentTarget }) => {
-          fetch('/cart/add', {
-            method: 'POST',
-            body: JSON.stringify({ user_id: ${
-              user.id
-            }, product_id: currentTarget.closest('.product-item').dataset.id }),
-            headers:{
-              'Content-Type': 'application/json'
-            }
-          })
-          .then(res => res.json())
-          .then(data => console.log(data))
-          .catch(err => console.log(err));
-      }, $button))
-      )
-    }
+    _.go(
+      $.qsa('.button'),
+      $.on('click', ({ currentTarget }) => {
+        loadingCtrl()
+        fetch('/cart/add', {
+          method: 'POST',
+          body: JSON.stringify({ product_id: currentTarget.closest('.product-item').dataset.id }),
+          headers:{
+            'Content-Type': 'application/json'
+          }
+        })
+        .then(res => res.json())
+        .then(data => (loadingCtrl('close'), console.log(data)))
+        .catch(err => console.log(err));
+      }));
     </script>
   `;
 

@@ -27,6 +27,8 @@ _.go(
     if (emailValue == '' || passwordValue == '')
       return errMsg('이메일 또는 비밀번호를 입력해주세요!');
 
+    loadingCtrl('open');
+
     _.go(
       fetch('/auth/signin', {
         method: 'POST',
@@ -40,10 +42,11 @@ _.go(
       }),
       (res) => res.json(),
       ({ message, redirectTo }) => {
+        loadingCtrl('close');
         if (message) return errMsg(message);
         location.replace(redirectTo);
       }
-    );
+    ).catch((err) => console.log(err));
   })
 );
 
@@ -53,6 +56,4 @@ _.go(
     _.go(
       $.qsa('.error-message'),
       _.each((el) => el.style.display == 'block' && $.hide(el))
-    )
-  )
-);
+    )));

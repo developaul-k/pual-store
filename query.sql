@@ -28,6 +28,21 @@ CREATE TABLE cart (
 	amount NUMERIC DEFAULT 1
 );
 
+CREATE TABLE posts (
+	id SERIAL PRIMARY KEY,
+	user_id SERIAL REFERENCES users ON DELETE CASCADE,
+);
+
+CREATE TABLE categorys (
+	id SERIAL PRIMARY KEY,
+	post_id SERIAL REFERENCES posts ON DELETE CASCADE
+);
+
+CREATE TABLE post_category (
+	post_id SERIAL REFERENCES posts ON DELETE CASCADE,
+	category_id SERIAL REFERENCES categorys ON DELETE CASCADE
+);
+
 INSERT INTO users (full_name, email, password, date_of_birth, address, phone)
 VALUES ('김영주', 'yjk@marpple.com', '123', DATE '1990-04-30', '서울', '010-2184-5200');
 
@@ -35,7 +50,10 @@ INSERT INTO products (name, price, image)
 VALUES ('iPhone 12 Pro', 2000000, '{/images/iphone-12-pro-gold-hero.png}');
 
 INSERT INTO products (name, price, image)
-VALUES ('iPhone 12 Pro', 2000000, '{/images/product_image3.jpg, /images/product_image4.jpg}');
+VALUES ('iPhone 12 Pro blue', 2000000, '{/images/iphone-12-pro.jpeg}');
+
+INSERT INTO products (name, price, image)
+VALUES ('iPhone 12 Pro graphite', 2000000, '{/images/iphone-12-pro-graphite-hero.png}');
 
 INSERT INTO products (name, price, image)
 VALUES ('iMac', 3000000, '{/images/product_image5.jpg, /images/product_image6.jpg}');
@@ -72,6 +90,12 @@ FROM cart c, products p WHERE c.user_id = 1 AND c.product_id = p.id GROUP BY p.i
 --FROM cart c INNER JOIN products p ON (c.user_id = 1 AND c.product_id = p.id);
 
 -- 3. 장바구니 총 수량, 총 금액 가져오기
-SELECT sum(c.amount) AS total_amount, sum(price) AS total_price
-FROM cart c, products p
-WHERE c.user_id = 1 AND c.product_id = p.id;
+SELECT p.id, p.name, (p.price * c.amount) as price, c.amount, p.image
+FROM cart c, products p WHERE c.user_id = 1 AND p.id = c.product_id;
+
+
+SELECT * FROM cart;
+
+DELETE FROM cart WHERE id IN (1, 3);
+
+ALTER TABLE cart ALTER COLUMN amount type INT;

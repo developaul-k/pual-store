@@ -100,4 +100,28 @@ img {
     align-items: center;
     height: 340px; }
 
+.loading {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.3);
+  z-index: 5; }
+  .loading.is-active {
+    display: flex; }
+  .loading span {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background-color: #fff;
+    z-index: 6; }
+
 /*# sourceMappingURL=style.css.map */
