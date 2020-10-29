@@ -12,6 +12,7 @@ const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 const cartRouter = require('./routes/cart');
 const authRouter = require('./routes/auth');
+const productRouter = require('./routes/product');
 
 const app = express();
 
@@ -54,12 +55,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // no-cache middleware
 app.use(function (req, res, next) {
   res.setHeader('Surrogate-Control', 'no-store');
-  res.setHeader(
-    'Cache-Control',
-    'no-store, no-cache, must-revalidate, proxy-revalidate'
-  );
-  res.setHeader('Pragma', 'no-cache');
-  res.setHeader('Expires', '0');
+  res.setHeader('Cache-Control', 'no-store, must-revalidate');
 
   next();
 });
@@ -68,6 +64,7 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/cart', cartRouter);
 app.use('/auth', authRouter);
+app.use('/product', productRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

@@ -41,3 +41,27 @@ $.setAttr = _.curry((attrs, el) => {
 
   return el;
 });
+
+$.post = _.curry((url, body) =>
+  fetch(url, {
+    method: 'POST',
+    body: JSON.stringify(body),
+    headers: { 'Content-type': 'application/json' },
+  }).then((res) => res.json())
+);
+
+$.delete = _.curry((url, body) =>
+  fetch(url, {
+    method: 'DELETE',
+    body: JSON.stringify(body),
+    headers: { 'Content-type': 'application/json' },
+  }).then((res) => res.json())
+);
+
+$.put = _.curry((url, body) =>
+  fetch(url, {
+    method: 'PUT',
+    body: JSON.stringify(body),
+    headers: { 'Content-type': 'application/json' },
+  }).then((res) => res.json())
+);

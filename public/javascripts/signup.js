@@ -27,21 +27,14 @@ _.go(
       return errMsg('이메일 또는 비밀번호를 입력해주세요!');
 
     _.go(
-      fetch('/auth/signup', {
-        method: 'POST',
-        headers: {
-          'Content-type': 'application/json',
-        },
-        body: JSON.stringify({
-          email,
-          password,
-          full_name,
-          address,
-          phone,
-          date_of_birth,
-        }),
+      $.post('/auth/signup', {
+        email,
+        password,
+        full_name,
+        address,
+        phone,
+        date_of_birth,
       }),
-      (res) => res.json(),
       ({ redirectTo, message }) => {
         if (redirectTo) {
           alert(message);

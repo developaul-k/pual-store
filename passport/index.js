@@ -31,6 +31,8 @@ module.exports = () => {
             user,
           ] = await QUERY`SELECT id, password FROM users WHERE email = ${email}`;
 
+          if (!user) return done(null, false, { message: '아이디 또는 비밀번호가 일치 하지 않습니다.' });
+
           const verifyPassword = await verify(password, user.password);
 
           if (verifyPassword) {

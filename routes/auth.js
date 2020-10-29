@@ -76,7 +76,7 @@ const renderSignup = () => `
 `;
 
 router.get('/signin', isNotLoggedIn, async function (req, res, next) {
-  res.render('index', { title: '로그인', body: renderSignin() });
+  res.render('index', { title: 'Sign in', body: renderSignin() });
 });
 
 router.post('/signin', isNotLoggedIn, (req, res, next) => {

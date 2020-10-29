@@ -126,4 +126,10 @@ img {
     background-color: #fff;
     z-index: 6; }
 
+.column-box {
+  display: flex;
+  align-items: flex-start; }
+  .column-box .column {
+    width: 50%; }
+
 /*# sourceMappingURL=style.css.map */

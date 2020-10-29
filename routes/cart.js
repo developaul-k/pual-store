@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const _ = require('fxjs/Strict');
+const { go, map, strMap } = require('fxjs/Strict');
 const rangeL = require('fxjs/Lazy/rangeL');
 
 const { QUERY, VALUES, ASSOCIATE, SQL, SET, IN } = require('../database');
@@ -12,11 +12,10 @@ const renderCart = (cart) => {
   const isDisabled = cart.length ? '' : 'disabled';
 
   return `
-    <a href="javascript:history.back()">뒤로가기</a>
     <table class="cart">
       <thead>
         <tr>
-          <th class="left"><input type="checkbox" class="checkbox-all" checked /></th>
+          <th class="left"><input type="checkbox" class="checkbox-all" checked ${isDisabled} /></th>
           <th></th>
           <th>상품명</th>
           <th>금액</th>
@@ -24,22 +23,22 @@ const renderCart = (cart) => {
         </tr>
       </thead>
       <tbody>
-        ${_.strMap(
+        ${strMap(
           ({ id, name, price, amount, image }) => `
             <tr data-id="${id}">
               <td>
                 <input type="checkbox" class="checkbox" checked />
               </td>
               <td class="image">
-                ${_.map((src) => `<img src="${src}" alt="${name}" />`, image)}
+                ${map((src) => `<img src="${src}" alt="${name}" />`, image)}
               </td>
               <td>${name}</td>
               <td class="right">${price}</td>
               <td class="center">
                 <select>
-                  ${_.go(
+                  ${go(
                     rangeL(1, amount + 1),
-                    _.strMap(
+                    strMap(
                       (n) =>
                         `<option value="${n}" ${
                           amount == n ? 'selected' : ''
@@ -56,89 +55,30 @@ const renderCart = (cart) => {
     </table>
     <button class="delete-cart" type="button" ${isDisabled}>선택 상품 삭제</button>
     <button class="delete-cart" data-type="all" type="button" ${isDisabled}>전체 상품 삭제</button>
-    <script>
-      _.go(
-        $.qsa('.checkbox'),
-        $.on('change', () => _.go(
-          $.qsa('.checkbox:checked'),
-          ({ length }) => length > 0 ? $.removeAttr('disabled', $.qs('.delete-cart'))
-            : $.setAttr({ disabled: true }, $.qs('.delete-cart'))
-        )));
-
-      _.go(
-        $.qsa('.delete-cart'),
-        $.on('click', ({ currentTarget }) => {
-          const typeAll = currentTarget.getAttribute('data-type') == 'all';
-          const sel = typeAll ? '.checkbox' : '.checkbox:checked';
-          const message = typeAll ? '전체 상품을 삭제하시겠습니까?' : '선택한 상품을 삭제하시겠습니까?'
-
-          if (confirm(message)) {
-            const body = _.go(
-              $.qsa(sel),
-              _.map(el => $.data($.closest('tr', el)).id),
-              cart_ids => JSON.stringify({ cart_ids }));
-
-            _.go(
-              $.trigger('open', $.qs('.loading')),
-              _ => fetch('/cart/delete', {
-                headers: {
-                  "Content-Type": "application/json"
-                },
-                method: "DELETE",
-                body
-              }),
-              res => res.json(),
-              ({redirectTo}) => location.replace(redirectTo)
-            ).catch(err => {
-              $.trigger('close', $.qs('.loading'));
-              console.log(err);
-            })}}));
-
-      _.go(
-        $.qsa('select'),
-        $.on('change', ({ currentTarget }) => _.go(
-          currentTarget,
-          $.find('option:checked'),
-          _.tap(_ => $.trigger('open', $.qs('.loading'))),
-          ({ value: amount }) => {
-            const { id } = $.data($.closest('tr', currentTarget));
-
-            fetch('/cart/update', {
-              headers: {
-                "Content-Type": "application/json"
-              },
-              method: "PUT",
-              body: JSON.stringify({ id, amount })
-            })
-            .then(res => res.json())
-            .then(({redirectTo}) => location.replace(redirectTo))
-            .catch(err => console.log(err));
-          }
-        )));
-    </script>
+    <script src="/javascripts/cart.js"></script>
   `;
 };
 
 router.get('/', isLoggedIn, async function (req, res, next) {
   const { user: user_id } = req.session.passport;
 
-  try {
+/*   try {
     const test = await ASSOCIATE`
       users ${SQL`WHERE id = 4`}
-        x products ${{ xtable: 'cart' }}
+        x products
     `;
 
     if (test) console.log('test', test[0]);
   } catch (err) {
     console.log(err);
-  }
+  } */
 
-  _.go(
+  go(
     QUERY`
       SELECT c.id, p.name, (p.price * c.amount) as price, c.amount, p.image
       FROM cart c, products p WHERE c.user_id = ${user_id} AND p.id = c.product_id ORDER BY created_at;
     `,
-    (cart) => res.render('index', { title: '장바구니', body: renderCart(cart) })
+    (cart) => res.render('index', { title: 'Cart', body: renderCart(cart) })
   ).catch((err) => {
     console.log(err);
     next();
@@ -152,7 +92,7 @@ router.post('/add', isLoggedIn, function (req, res, next) {
     },
     body: { product_id },
   } = req;
-  _.go(
+  go(
     QUERY`
       SELECT id, amount
       FROM cart

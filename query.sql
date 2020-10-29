@@ -1,6 +1,9 @@
 DROP TABLE users;
 DROP TABLE products;
 DROP TABLE cart;
+DROP TABLE cart_products;
+DROP TABLE comments;
+DROP TABLE products_cart;
 
 CREATE TABLE users (
 	id SERIAL PRIMARY KEY,
@@ -28,23 +31,14 @@ CREATE TABLE cart (
 	amount NUMERIC DEFAULT 1
 );
 
-CREATE TABLE posts (
+CREATE TABLE comments (
 	id SERIAL PRIMARY KEY,
+	body VARCHAR(500) NOT NULL,
+	created_at TIMESTAMP NOT NULL DEFAULT now(),
+	updated_at TIMESTAMP NOT NULL DEFAULT now(),
 	user_id SERIAL REFERENCES users ON DELETE CASCADE,
+	product_id SERIAL REFERENCES products ON DELETE CASCADE
 );
-
-CREATE TABLE categorys (
-	id SERIAL PRIMARY KEY,
-	post_id SERIAL REFERENCES posts ON DELETE CASCADE
-);
-
-CREATE TABLE post_category (
-	post_id SERIAL REFERENCES posts ON DELETE CASCADE,
-	category_id SERIAL REFERENCES categorys ON DELETE CASCADE
-);
-
-INSERT INTO users (full_name, email, password, date_of_birth, address, phone)
-VALUES ('김영주', 'yjk@marpple.com', '123', DATE '1990-04-30', '서울', '010-2184-5200');
 
 INSERT INTO products (name, price, image)
 VALUES ('iPhone 12 Pro', 2000000, '{/images/iphone-12-pro-gold-hero.png}');

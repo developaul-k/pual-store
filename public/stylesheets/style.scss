@@ -154,3 +154,11 @@ img {
     z-index: 6;
   }
 }
+
+.column-box {
+  display: flex;
+  align-items: flex-start;
+  .column {
+    width: 50%;
+  }
+}
