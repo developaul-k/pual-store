@@ -42,6 +42,16 @@ $.setAttr = _.curry((attrs, el) => {
   return el;
 });
 
+/* $.get = _.curry((url, body = {}) => {
+  const _body = _.go(
+    body,
+    L.entries,
+    L.map(_.join('=')),
+    _.join('&'));
+
+  return fetch(url, _body);
+}); */
+
 $.post = _.curry((url, body) =>
   fetch(url, {
     method: 'POST',

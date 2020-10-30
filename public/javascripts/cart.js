@@ -19,11 +19,14 @@ _.go(
 
 _.go(
   $.qs('.checkbox-all'),
-  $.on('change', ({ currentTarget }) => _.go(
-    currentTarget,
-    ({ checked }) => checked,
-    bool => _.each(el => el.checked = bool, $.qsa('.checkbox'))
-  )));
+  $.on('change', ({ currentTarget }) =>
+    _.go(
+      currentTarget,
+      ({ checked }) => checked,
+      (bool) => _.each((el) => (el.checked = bool), $.qsa('.checkbox'))
+    )
+  )
+);
 
 _.go(
   $.qsa('.delete-cart'),
@@ -69,4 +72,16 @@ _.go(
       }
     )
   )
+);
+
+_.go(
+  $.qs('.checkout'),
+  $.on('click', async (e) => {
+    const queryString = _.go(
+      $.qsa('.checkbox:checked'),
+      L.map(({value}) => `products=${value}`),
+      _.join('&'));
+
+    location.href = `http://localhost:3000/cart/checkout?${queryString}`;
+  })
 );
