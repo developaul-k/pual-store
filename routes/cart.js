@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const { go, map, strMap, split } = require('fxjs/Strict');
+const { go, map, strMap, reduce, add, split, find } = require('fxjs/Strict');
 const { range: rangeL, map: mapL } = require('fxjs/Lazy');
 
 const {
@@ -19,6 +19,7 @@ const renderCart = (cart) => {
   const isDisabled = cart.length ? '' : 'disabled';
 
   return `
+    <h1>장바구니</h1>
     <table class="cart">
       <thead>
         <tr>
@@ -36,23 +37,21 @@ const renderCart = (cart) => {
           ({ id, product_id, name, price, amount, image }) => `
             <tr data-id="${id}">
               <td>
-                <input type="checkbox" class="checkbox" value="${product_id}" checked />
+                <input type="checkbox" class="checkbox" value="${product_id}:${amount}" checked />
               </td>
               <td class="image">
                 ${map((src) => `<img src="${src}" alt="${name}" />`, image)}
               </td>
               <td>${name}</td>
-              <td class="right">${price}</td>
+              <td class="right">${price.toLocaleString()} 원</td>
               <td class="center">
                 <select>
-                  ${go(
-                    rangeL(1, amount + 1),
-                    strMap(
-                      (n) =>
-                        `<option value="${n}" ${
-                          amount == n ? 'selected' : ''
-                        }>${n}</option>`
-                    )
+                  ${strMap(
+                    (n) =>
+                      `<option value="${n}" ${
+                        amount == n ? 'selected' : ''
+                      }>${n}</option>`,
+                    rangeL(1, amount + 1)
                   )}
                 </select>
               </td>
@@ -69,11 +68,14 @@ const renderCart = (cart) => {
   `;
 };
 
-const renderCheckout = ({ user, products }) => `
+const renderCheckout = ({ user, products, total_prices, shipping_cost }) => `
+  <section>
+    <h1 class="h1">주문/결제</h1>
+  </section>
   <form class="checkout-form">
     <section>
-      <h1>구매자정보</h1>
-      <table>
+      <h2 class="h2">구매자정보</h2>
+      <table class="table-style type1">
         <tbody>
           <tr>
             <th scope="row">이름</th>
@@ -91,8 +93,8 @@ const renderCheckout = ({ user, products }) => `
       </table>
     </section>
     <section>
-      <h1>받는사람정보</h1>
-      <table>
+      <h2 class="h2">받는사람정보</h2>
+      <table class="table-style type1">
         <tbody>
           <tr>
             <th scope="row">이름</th>
@@ -110,27 +112,47 @@ const renderCheckout = ({ user, products }) => `
       </table>
     </section>
     <section>
-      <h1>구매목록</h1>
+      <h2 class="h2">구매목록</h2>
       <table class="cart">
         <thead>
           <tr>
             <th></th>
             <th>상품명</th>
-            <th>금액</th>
             <th>수량</th>
           </tr>
         </thead>
         <tbody>
-          ${
-            strMap(({ name, image }) => `
+          ${strMap(
+            ({ name, image, amount }) => `
               <tr>
                 <td class="image">
-                  ${strMap(src => `<img src="${src}" alt="name" />`, image)}
+                  ${strMap((src) => `<img src="${src}" alt="name" />`, image)}
                 </td>
                 <td>${name}</td>
+                <td class="center">${amount} 개</td>
               </tr>
-            `, products)
-          }
+            `,
+            products
+          )}
+        </tbody>
+      </table>
+    </section>
+    <section>
+      <h2 class="h2">결제정보</h2>
+      <table class="table-style type1">
+        <tbody>
+          <tr>
+            <th scope="row">총상품가격</th>
+            <td>${total_prices.toLocaleString()} 원</td>
+          </tr>
+          <tr>
+            <th scope="row">배송비</th>
+            <td>${shipping_cost.toLocaleString()} 원</td>
+          </tr>
+          <tr>
+            <th scope="row">총결제금액</th>
+            <td>${(total_prices + shipping_cost).toLocaleString()} 원</td>
+          </tr>
         </tbody>
       </table>
     </section>
@@ -169,23 +191,36 @@ router.get('/checkout', isLoggedIn, async function (req, res, next) {
     user,
   } = req;
 
-  console.log(products);
+  const _products = typeof products === 'string' ? [products] : products;
 
-  const cart_products = await QUERY`
-    SELECT image, name FROM products WHERE ${IN('id', products)}
-  `;
+  const product_ids = map(([id, _]) => id, map(split(':'), _products));
 
-  console.log(cart_products);
+  go(
+    QUERY`SELECT id, image, price, name
+      FROM products WHERE ${IN('id', product_ids)}`,
+    map((product) =>
+      go(
+        _products,
+        map(split(':')),
+        find(([id, _]) => product.id == id),
+        ([_, amount]) => ({ ...product, amount })
+      )
+    ),
+    (products) => {
+      const total_prices = reduce(
+        add,
+        map(({ price, amount }) => price * amount, products)
+      );
+      const shipping_cost = total_prices > 100000 ? 0 : 3000;
 
-  /* const cart_products = await QUERY`
-    SELECT * FROM cart
-    WHERE ${IN('product_id', products)}
-    AND user_id = ${user.id}
-  `; */
-
-  res.render('index', {
-    title: 'Checkout',
-    body: renderCheckout({ user, products: cart_products }),
+      res.render('index', {
+        title: 'Checkout',
+        body: renderCheckout({ user, products, total_prices, shipping_cost }),
+      });
+    }
+  ).catch((err) => {
+    console.log(err);
+    next(err);
   });
 });
 

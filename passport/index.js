@@ -1,3 +1,4 @@
+const omitBy = require('fxjs/Strict/omitBy');
 const passport = require('passport');
 const { Strategy: LocalStrategy } = require('passport-local');
 const POOL = require('../database');
@@ -13,7 +14,10 @@ module.exports = () => {
   passport.deserializeUser(async function (id, done) {
     try {
       const [user] = await QUERY`SELECT * FROM users WHERE id = ${id}`;
-      done(null, user);
+      done(
+        null,
+        omitBy(([k]) => ['password'].includes(k), user)
+      );
     } catch (err) {
       console.log(err);
     }
@@ -31,7 +35,10 @@ module.exports = () => {
             user,
           ] = await QUERY`SELECT id, password FROM users WHERE email = ${email}`;
 
-          if (!user) return done(null, false, { message: '아이디 또는 비밀번호가 일치 하지 않습니다.' });
+          if (!user)
+            return done(null, false, {
+              message: '아이디 또는 비밀번호가 일치 하지 않습니다.',
+            });
 
           const verifyPassword = await verify(password, user.password);
 
@@ -43,6 +50,7 @@ module.exports = () => {
             });
           }
         } catch (err) {
+          console.log(err);
           return done(err);
         }
       }

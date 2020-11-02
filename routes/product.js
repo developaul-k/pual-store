@@ -14,7 +14,7 @@ const renderProduct = ({ id, name, price, image }) => {
       </div>
       <div class="column">
         <div style="font-size: 24px; font-weight: bold">${name}</div>
-        <div>Price: ${price}</div>
+        <div>Price: ${Number(price).toLocaleString()}</div>
         ${renderCartButton()}
       </div>
     </div>

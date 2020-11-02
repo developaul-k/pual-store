@@ -7,8 +7,10 @@ _.go(
 
       if (length == 0) {
         $.setAttr({ disabled: true }, $delete_cart);
+        $check_all.checked = false;
       } else if (length == $.qsa('.checkbox').length) {
         $check_all.checked = true;
+        $.removeAttr('disabled', $delete_cart);
       } else {
         $check_all.checked = false;
         $.removeAttr('disabled', $delete_cart);
@@ -23,7 +25,8 @@ _.go(
     _.go(
       currentTarget,
       ({ checked }) => checked,
-      (bool) => _.each((el) => (el.checked = bool), $.qsa('.checkbox'))
+      (bool) => _.each((el) => (el.checked = bool), $.qsa('.checkbox')),
+      _ => $.trigger('change', $.qs('.checkbox'))
     )
   )
 );
@@ -76,12 +79,12 @@ _.go(
 
 _.go(
   $.qs('.checkout'),
-  $.on('click', async (e) => {
-    const queryString = _.go(
+  $.on('click', () =>
+    _.go(
       $.qsa('.checkbox:checked'),
-      L.map(({value}) => `products=${value}`),
-      _.join('&'));
-
-    location.href = `http://localhost:3000/cart/checkout?${queryString}`;
-  })
+      L.map(({ value }) => `products=${value}`),
+      _.join('&'),
+      (qstr) => (location.href = `http://localhost:3000/cart/checkout?${qstr}`)
+    )
+  )
 );

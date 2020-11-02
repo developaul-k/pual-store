@@ -38,7 +38,7 @@ router.get('/', isLoggedIn, async function (req, res, next) {
                       <img src="${image}" alt="">
                     </div>
                     <div class="product-name">${name}</div>
-                    <div class="product-price">${price}</div>
+                    <div class="product-price">${Number(price).toLocaleString()} 원</div>
                   </a>
                   ${renderCartButton()}
                 </li>
