@@ -1,19 +1,26 @@
 _.go(
   $.qsa('.checkbox'),
   $.on('change', () => {
-    _.go($.qsa('.checkbox:checked'), ({ length }) => {
+    _.go($.qsa('.checkbox:checked'), ({ length: checkedLength }) => {
+      const $checkout = $.qs('.checkout');
       const $check_all = $.qs('.checkbox-all');
       const $delete_cart = $.qs('.delete-cart');
 
-      if (length == 0) {
-        $.setAttr({ disabled: true }, $delete_cart);
-        $check_all.checked = false;
-      } else if (length == $.qsa('.checkbox').length) {
-        $check_all.checked = true;
+      const disabledButtons = () => {
         $.removeAttr('disabled', $delete_cart);
+        $.removeAttr('disabled', $checkout);
+      }
+
+      if (checkedLength == 0) {
+        $.setAttr({ disabled: true }, $delete_cart);
+        $.setAttr({ disabled: true }, $checkout);
+        $check_all.checked = false;
+      } else if (checkedLength == $.qsa('.checkbox').length) {
+        $check_all.checked = true;
+        disabledButtons();
       } else {
         $check_all.checked = false;
-        $.removeAttr('disabled', $delete_cart);
+        disabledButtons();
       }
     });
   })
@@ -43,15 +50,14 @@ _.go(
     if (confirm(message)) {
       $.trigger('open', $.qs('.loading'));
 
-      _.go(
-        $.qsa(sel),
-        _.map((el) => $.data($.closest('tr', el)).id),
-        (cart_ids) => $.delete('/cart/delete', { cart_ids }),
-        ({ redirectTo }) => location.replace(redirectTo)
-      ).catch((err) => {
+      try {
+        const cart_ids = _.map((el) => $.data($.closest('tr', el)).id, $.qsa(sel));
+        const { redirectTo } = await $.delete('/cart/delete', { cart_ids });
+        location.replace(redirectTo);
+      } catch(err) {
         $.trigger('close', $.qs('.loading'));
         console.log('err');
-      });
+      }
     }
   })
 );
@@ -82,7 +88,7 @@ _.go(
   $.on('click', () =>
     _.go(
       $.qsa('.checkbox:checked'),
-      L.map(({ value }) => `products=${value}`),
+      L.map(({ value }) => `products=${encodeURIComponent(value)}`),
       _.join('&'),
       (qstr) => (location.href = `http://localhost:3000/cart/checkout?${qstr}`)
     )

@@ -12,6 +12,11 @@
 
 <body>
   <%-body%>
+  <% if (typeof pageScript !== 'undefined') { %>
+    <% pageScript.forEach(function (fileName){ %>
+    <script src="/javascripts/<%-fileName%>"></script>
+    <% }); %>
+  <% } %>
   <script src="/javascripts/common.js"></script>
 </body>
 

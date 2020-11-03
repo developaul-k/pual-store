@@ -4,7 +4,7 @@ const { Strategy: LocalStrategy } = require('passport-local');
 const POOL = require('../database');
 const { verify } = require('../verify');
 
-const { QUERY } = POOL;
+const { QUERY1 } = POOL;
 
 module.exports = () => {
   passport.serializeUser(function (user, done) {
@@ -13,11 +13,8 @@ module.exports = () => {
 
   passport.deserializeUser(async function (id, done) {
     try {
-      const [user] = await QUERY`SELECT * FROM users WHERE id = ${id}`;
-      done(
-        null,
-        omitBy(([k]) => ['password'].includes(k), user)
-      );
+      const user = await QUERY1`SELECT * FROM users WHERE id = ${id}`;
+      done(null, omitBy(([k]) => ['password'].includes(k), user));
     } catch (err) {
       console.log(err);
     }
@@ -31,9 +28,7 @@ module.exports = () => {
       },
       async function (email, password, done) {
         try {
-          const [
-            user,
-          ] = await QUERY`SELECT id, password FROM users WHERE email = ${email}`;
+          const user = await QUERY1`SELECT id, password FROM users WHERE email = ${email}`;
 
           if (!user)
             return done(null, false, {

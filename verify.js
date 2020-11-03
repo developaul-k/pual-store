@@ -3,7 +3,7 @@ const crypto = require('crypto');
 async function hash(password) {
   return new Promise((resolve, reject) => {
     // generate random 16 bytes long salt
-    const salt = crypto.randomBytes(16).toString('hex');
+    const salt = crypto.randomBytes(64).toString('hex');
 
     crypto.scrypt(password, salt, 64, (err, derivedKey) => {
       if (err) reject(err);
