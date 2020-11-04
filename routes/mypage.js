@@ -17,7 +17,7 @@ router.get('/', isLoggedIn, async function (req, res, next) {
         query: SQL`WHERE user_id = ${user_id}`,
       }}
         x products ${{
-          column: COLUMN(SQL`orders_products.quantity`, SQL`products.*`)
+          column: COLUMN(SQL`products.*`, SQL`orders_products.quantity`)
         }}` || [];
 
     console.log(orders[1]._.products);
