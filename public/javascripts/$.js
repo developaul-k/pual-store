@@ -21,6 +21,23 @@ $.on = _.curry((e, f) => (els) =>
   )
 );
 
+$.delegate = (e, els, f) => (parent) =>
+  parent.addEventListener(e, (event) =>
+    _.go(
+      parent,
+      $.findAll(els),
+      L.filter((el) => event.target.contains(el)),
+      _.each((currentTarget) =>
+        f({
+          ...event,
+          currentTarget,
+          originalEvent: event,
+          delegateTarget: parent,
+        })
+      )
+    )
+  );
+
 $.trigger = _.curry((eventName, el) => el.dispatchEvent(new Event(eventName)));
 
 $.text = _.curry((text, el) => ((el.innerText = text), el));

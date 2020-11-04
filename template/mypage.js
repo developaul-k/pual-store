@@ -14,7 +14,7 @@ const renderMain = ({ user, orders }) => `
       </thead>
       <tbody>
         ${strMap(
-          ({ id, created_at, _: {
+          ({ id, order_date, _: {
               products,
               products: { length: pdLeng },
             },
@@ -22,7 +22,7 @@ const renderMain = ({ user, orders }) => `
             <tr>
               <td>${id}</td>
               <td>${products[0].name} ${pdLeng > 1 ? `외 ${pdLeng - 1}건` : ''}</td>
-              <td>${created_at}</td>
+              <td>${order_date}</td>
             </tr>
           `,
           orders)}

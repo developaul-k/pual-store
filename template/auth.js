@@ -1,3 +1,5 @@
+const { Button } = require("../components/utils");
+
 const renderSignin = () => `
   <div class="sign-container login">
     <form class="form">
@@ -10,7 +12,7 @@ const renderSignin = () => `
           <input type="password" name="password" class="input" placeholder="비밀번호를 입력해주세요.">
         </div>
         <div class="column">
-          <button type="submit" class="button">로그인</button>
+          ${Button({ type: 'type="submit"', text: '로그인', className: 'full login' })}
         </div>
         <div class="column">
           계정이 없으신가요?
@@ -50,7 +52,7 @@ const renderSignup = () => `
           <input type="text" name="date_of_birth" class="input" placeholder="생년월일을 입력해주세요.">
         </div>
         <div class="column">
-          <button type="submit" class="button">회원가입</button>
+          ${Button({ type: 'type="submit"', text: '회원가입', className: 'full login' })}
         </div>
         <div class="column">
           이미 계정이 있으신가요?

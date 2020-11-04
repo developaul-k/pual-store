@@ -12,7 +12,7 @@ _.go(
 );
 
 _.go(
-  $.qsa('.button.cart'),
+  $.qsa('.add-cart'),
   $.on('click', async ({ currentTarget }) => {
     $.trigger('open', $.qs('.loading'));
     try {
@@ -21,7 +21,16 @@ _.go(
       $.trigger('close', $.qs('.loading'));
       console.log(data);
     } catch (err) {
+      $.trigger('close', $.qs('.loading'));
       console.log(err);
     }
   })
+);
+
+
+const queryToItrer = _.pipe(
+  decodeURIComponent,
+  _.replace('?', ''),
+  _.split('&'),
+  _.map(_.split('='))
 );

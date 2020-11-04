@@ -10,13 +10,13 @@ const productDetail = ({ id, name, price, image }) => {
       <div class="column">
         <div style="font-size: 24px; font-weight: bold">${name}</div>
         <div>Price: ${Number(price).toLocaleString()}</div>
-        ${Button({ text: '장바구니 담기', className: 'cart' })}
+        ${Button({text: '장바구니 담기', className: 'add-cart full'})}
       </div>
     </div>
   `;
 };
 
-const productsItem = ({ id, image, name, price, buttonText = '장바구니 담기' }) => `
+const productsItem = ({ id, image, name, price }) => `
   <li class="product-item" data-id="${id}">
     <a href="/product/${id}">
       <div class="product-image">
@@ -25,7 +25,7 @@ const productsItem = ({ id, image, name, price, buttonText = '장바구니 담�
       <div class="product-name">${name}</div>
       <div class="product-price">${Number(price).toLocaleString()} 원</div>
     </a>
-    ${Button({text: buttonText, className: 'cart'})}
+    ${Button({text: '장바구니 담기', className: 'add-cart full'})}
   </li>
 `;
 
