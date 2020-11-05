@@ -10,6 +10,7 @@ _.go(
     if (!checkValidate([password, address, phone, date_of_birth]))
       return errMsg('모든 입력란을 채워주세요');
 
+    $.trigger('open', $.qs('.loading'));
     _.go(
       $.post('/user/change-info', {
         password: password.value,
@@ -23,8 +24,12 @@ _.go(
           location.replace(redirectTo);
         } else {
           errMsg(message);
+          $.trigger('close', $.qs('.loading'));
         }
       }
-    );
+    ).catch((err) => {
+      $.trigger('close', $.qs('.loading'));
+      console.log(err);
+    });
   })
 );

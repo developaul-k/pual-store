@@ -10,7 +10,7 @@ const renderMain = ({
   total_prices,
   shipping_cost
 }) => `
-  <div>
+  <div class="contents">
     <h1 class="h1">주문 상세</h1>
     <section>
       <h2 class="h2">구매목록</h2>

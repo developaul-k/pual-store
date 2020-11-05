@@ -11,12 +11,23 @@
 </head>
 
 <body>
+  <% if (typeof username !== 'undefined') { %>
+    <header class="header">
+      <a href="/">pual-store</a>
+      <div>
+        <%-username%> 님
+        <a href="/cart">장바구니</a>
+        <a href="/mypage">마이페이지</a>
+        <a href="/auth/signout">로그아웃</a>
+      </div>
+    </header>
+  <% } %>
   <%-body%>
   <script src="/javascripts/common.js"></script>
   <% if (typeof pageScript !== 'undefined') { %>
-    <% pageScript.forEach(function (fileName){ %>
-    <script src="/javascripts/<%-fileName%>"></script>
-    <% }); %>
+  <% pageScript.forEach(function (fileName){ %>
+  <script src="/javascripts/<%-fileName%>"></script>
+  <% }); %>
   <% } %>
 </body>
 

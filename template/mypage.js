@@ -1,7 +1,7 @@
 const strMap = require("fxjs/Strict/strMap");
 
 const renderMain = (orders) => `
-  <div>
+  <div class="contents">
     <h1 class="h1">마이페이지</h1>
     <a href="/user/changeInfo">회원정보수정</a>
     <h2 class="h2">주문내역</h2>

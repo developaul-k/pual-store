@@ -11,7 +11,7 @@ router.get('/:id', isLoggedIn, async function (req, res, next) {
   } = req;
 
   go(QUERY`SELECT * FROM products WHERE id =${product_id}`, ([product]) =>
-    res.render('index', { title: `${product.name}  | pual store`, body: productDetail(product) })
+    res.render('index', { title: `${product.name}  | pual store`, body: `<div class="contents">${productDetail(product)}</div>` })
   ).catch((err) => {
     console.log(err);
     next();
