@@ -8,7 +8,7 @@ const renderMain = (cart) => {
   return `
     <section class="cart">
       <h1>장바구니</h1>
-      <table class="cart-table">
+      <table class="table-style type2">
         <thead>
           <tr>
             <th class="left">
@@ -118,7 +118,7 @@ const renderCheckout = ({ user, products, total_prices, shipping_cost }) => `
       </section>
       <section>
         <h2 class="h2">구매목록</h2>
-        <table class="cart-table">
+        <table class="table-style type2">
           <thead>
             <tr>
               <th></th>

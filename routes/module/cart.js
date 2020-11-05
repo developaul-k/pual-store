@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const { go, map, reduce, add, split, find } = require('fxjs/Strict');
-const { QUERY, QUERY1, VALUES, SET, IN, TRANSACTION } = require('../database');
-const { isLoggedIn } = require('../middlewares');
+const { QUERY, QUERY1, VALUES, SET, IN, TRANSACTION } = require('../../database');
+const { isLoggedIn } = require('../../middlewares');
 
-const { renderMain, renderCheckout } = require('../template/cart');
+const { renderMain, renderCheckout } = require('../../template/cart');
 
 router.get('/', isLoggedIn, async function (req, res, next) {
   const {

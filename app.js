@@ -5,15 +5,10 @@ const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const logger = require('morgan');
 const passport = require('passport');
+require('dotenv').config();
 const sassMiddleware = require('node-sass-middleware');
 const passportConfig = require('./passport');
-
-const indexRouter = require('./routes/index');
-const usersRouter = require('./routes/users');
-const cartRouter = require('./routes/cart');
-const authRouter = require('./routes/auth');
-const productRouter = require('./routes/product');
-const mypageRouter = require('./routes/mypage');
+const allRouter = require('./routes');
 
 const app = express();
 
@@ -26,10 +21,10 @@ app.set('view engine', 'ejs');
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser('secret_key'));
+app.use(cookieParser(process.env.SESSION_SECRET_KEY));
 app.use(
   session({
-    secret: 'secret_key',
+    secret: process.env.SESSION_SECRET_KEY,
     resave: false,
     saveUninitialized: false,
     cookie: {
@@ -61,12 +56,7 @@ app.use(function (req, res, next) {
   next();
 });
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
-app.use('/cart', cartRouter);
-app.use('/auth', authRouter);
-app.use('/product', productRouter);
-app.use('/mypage', mypageRouter);
+allRouter(app);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

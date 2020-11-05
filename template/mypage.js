@@ -1,10 +1,10 @@
 const strMap = require("fxjs/Strict/strMap");
 
-const renderMain = ({ user, orders }) => `
+const renderMain = (orders) => `
   <div>
     <h1 class="h1">마이페이지</h1>
-    <h2 class="h2">안녕하세요! ${user.full_name} 님</h2>
-    <table>
+    <h2 class="h2">주문내역</h2>
+    <table class="table-style type2">
       <thead>
         <tr>
           <th>주문번호</th>
@@ -20,9 +20,13 @@ const renderMain = ({ user, orders }) => `
             },
           }) => `
             <tr>
-              <td>${id}</td>
-              <td>${products[0].name} ${pdLeng > 1 ? `외 ${pdLeng - 1}건` : ''}</td>
-              <td>${order_date}</td>
+              <td class="center">${id}</td>
+              <td>
+                <a href="/orders/${id}">
+                  ${products[0].name} ${pdLeng > 1 ? `외 ${pdLeng - 1}건` : ''}
+                </a>
+              </td>
+              <td class="center">${order_date}</td>
             </tr>
           `,
           orders)}

@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const passport = require('passport');
-const { QUERY, QUERY1, VALUES } = require('../database');
-const { isNotLoggedIn, isLoggedIn } = require('../middlewares');
-const { hash } = require('../verify');
-const { renderSignin, renderSignup } = require('../template/auth');
+const { QUERY, QUERY1, VALUES } = require('../../database');
+const { isNotLoggedIn, isLoggedIn } = require('../../middlewares');
+const { hash } = require('../../verify');
+const { renderSignin, renderSignup } = require('../../template/auth');
 
 router.get('/signin', isNotLoggedIn, async function (req, res, next) {
   res.render('index', { title: 'Sign in', body: renderSignin() });

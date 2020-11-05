@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const go = require('fxjs/Strict/go');
-const { productDetail } = require('../components/products');
-const { QUERY } = require('../database');
-const { isLoggedIn } = require('../middlewares');
+const { productDetail } = require('../../components/products');
+const { QUERY } = require('../../database');
+const { isLoggedIn } = require('../../middlewares');
 
 router.get('/:id', isLoggedIn, async function (req, res, next) {
   const {

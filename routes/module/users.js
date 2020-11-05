@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const POOL = require('../database');
+const POOL = require('../../database');
 
 const { QUERY } = POOL;
 
