@@ -19,7 +19,7 @@ router.get('/', isLoggedIn, async function (req, res, next) {
         x products` || [];
 
     res.render('index', {
-      title: 'My page',
+      title: '마이페이지 | pual store',
       body: renderMain(orders),
     });
   } catch(err) {

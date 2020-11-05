@@ -1,10 +1,8 @@
 const omitBy = require('fxjs/Strict/omitBy');
 const passport = require('passport');
 const { Strategy: LocalStrategy } = require('passport-local');
-const POOL = require('../database');
+const { QUERY1, SQL } = require('../database');
 const { verify } = require('../verify');
-
-const { QUERY1 } = POOL;
 
 module.exports = () => {
   passport.serializeUser(function (user, done) {
@@ -13,8 +11,11 @@ module.exports = () => {
 
   passport.deserializeUser(async function (id, done) {
     try {
-      const user = await QUERY1`SELECT * FROM users WHERE id = ${id}`;
-      done(null, omitBy(([k]) => ['password'].includes(k), user));
+      const user = await QUERY1`
+        SELECT id, email, full_name, address, phone, to_char(date_of_birth, 'YYYY-MM-DD') as date_of_birth
+        FROM users WHERE id = ${id}`;
+
+      done(null, user);
     } catch (err) {
       console.log(err);
     }

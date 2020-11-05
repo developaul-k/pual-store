@@ -1,3 +1,19 @@
+const errMsg = (msg) => _.go($.qs('.error-message'), $.text(msg), $.show);
+
+const checkValidate = (iter) => {
+  for (const a of iter) {
+    if (a.value === '') return false;
+  }
+  return true;
+};
+
+const queryToItrer = _.pipe(
+  decodeURIComponent,
+  _.replace('?', ''),
+  _.split('&'),
+  _.map(_.split('='))
+);
+
 _.go(
   `
   <div class="loading">
@@ -25,12 +41,4 @@ _.go(
       console.log(err);
     }
   })
-);
-
-
-const queryToItrer = _.pipe(
-  decodeURIComponent,
-  _.replace('?', ''),
-  _.split('&'),
-  _.map(_.split('='))
 );

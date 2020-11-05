@@ -160,7 +160,7 @@ const renderCheckout = ({ user, products, total_prices, shipping_cost }) => `
         </table>
       </section>
       <div class="button-box center">
-        ${Button({ type: 'type="submit"', text: '결제하기', className: 'order-placed' })}
+        ${Button({ type: 'submit', text: '결제하기', className: 'order-placed' })}
       </div>
     </form>
   </section>

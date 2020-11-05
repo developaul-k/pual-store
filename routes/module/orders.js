@@ -8,6 +8,7 @@ const { renderMain } = require('../../template/orders');
 router.get('/:order_id', isLoggedIn, async function (req, res, next) {
   const {
     params: { order_id },
+    user
   } = req;
 
   try {
@@ -23,7 +24,7 @@ router.get('/:order_id', isLoggedIn, async function (req, res, next) {
     const total_prices = reduce(add, map(({ price, quantity }) => price * quantity, orders._.products));
     const shipping_cost = total_prices > 100000 ? 0 : 3000;
 
-    res.render('index', { title: '주문상세', body: renderMain({ orders, total_prices, shipping_cost}) });
+    res.render('index', { title: '주문상세 | pual store', body: renderMain({ user, orders, total_prices, shipping_cost}) });
   } catch(err) {
     console.log(err);
     next(err);

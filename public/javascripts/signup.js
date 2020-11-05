@@ -1,12 +1,3 @@
-const checkValidate = (iter) => {
-  for (const a of iter) {
-    if (a === '') return false;
-  }
-  return true;
-};
-
-const errMsg = (msg) => _.go($.qs('.error-message'), $.text(msg), $.show);
-
 _.go(
   $.qs('.form'),
   $.on('submit', (e) => {
@@ -14,12 +5,12 @@ _.go(
 
     const {
       currentTarget: {
-        email: { value: email },
-        password: { value: password },
-        full_name: { value: full_name },
-        address: { value: address },
-        phone: { value: phone },
-        date_of_birth: { value: date_of_birth },
+        email,
+        password,
+        full_name,
+        address,
+        phone,
+        date_of_birth,
       },
     } = e;
 

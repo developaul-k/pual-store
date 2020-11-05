@@ -1,5 +1,3 @@
-const errMsg = (msg) => _.go($.qs('.error-message'), $.text(msg), $.show);
-
 if (location.search) {
   _.go(
     decodeURIComponent(location.search),

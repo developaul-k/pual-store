@@ -1,6 +1,7 @@
 const strMap = require('fxjs/Strict/strMap');
 
 const renderMain = ({
+  user,
   orders: {
     id: order_id,
     order_date,
@@ -27,7 +28,7 @@ const renderMain = ({
           ${strMap(
             ({ id: product_id, image, name, quantity, price }) => `
               <tr>
-                <td class="center">${order_id}</td>
+                ${products[0].id == product_id ? `<td class="center" rowspan="${products.length}">${order_id}</td>` : ''}
                 <td>
                   <a href="/product/${product_id}">
                     <div class="image-text-box small">
@@ -38,7 +39,7 @@ const renderMain = ({
                 </td>
                 <td>${quantity}</td>
                 <td>${price.toLocaleString()} 원</td>
-                <td class="center">${order_date}</td>
+                ${products[0].id == product_id ? `<td class="center" rowspan="${products.length}">${order_date}</td>` : ''}
               </tr>
             `,
             products
@@ -65,6 +66,25 @@ const renderMain = ({
         </tbody>
       </table>
     </section>
+    <section>
+        <h2 class="h2">배송지 정보</h2>
+        <table class="table-style type1">
+          <tbody>
+            <tr>
+              <th scope="row">이름</th>
+              <td>${user.full_name}</td>
+            </tr>
+            <tr>
+              <th scope="row">배송주소</th>
+              <td>${user.address}</td>
+            </tr>
+            <tr>
+              <th scope="row">연락처</th>
+              <td>${user.phone}</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
   </div>
 `;
 
