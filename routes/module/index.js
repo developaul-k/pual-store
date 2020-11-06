@@ -16,7 +16,7 @@ router.get('/', isLoggedIn, async function (req, res, next) {
 
   const user = await QUERY1`SELECT id, full_name FROM users WHERE id = ${user_id}`;
 
-  res.render('index', { title: 'Home | pual store', body: renderMain({ user, products }) });
+  res.render('index', { title: 'Home', body: renderMain({ user, products }) });
 });
 
 module.exports = router;

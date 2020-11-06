@@ -1,21 +1,30 @@
 const express = require('express');
 const router = express.Router();
-const go = require('fxjs/Strict/go');
-const { productDetail } = require('../../components/products');
-const { QUERY } = require('../../database');
+const { ASSOCIATE1, SQL, FxSQL_DEBUG } = require('../../database');
 const { isLoggedIn } = require('../../middlewares');
+const { renderProduct } = require('../../template/product');
 
 router.get('/:id', isLoggedIn, async function (req, res, next) {
   const {
     params: { id: product_id },
   } = req;
 
-  go(QUERY`SELECT * FROM products WHERE id =${product_id}`, ([product]) =>
-    res.render('index', { title: `${product.name}  | pual store`, body: `<div class="contents">${productDetail(product)}</div>` })
-  ).catch((err) => {
+  FxSQL_DEBUG.LOG = true;
+  try {
+    const product = await ASSOCIATE1`
+      products ${{ query: SQL`WHERE id = ${product_id}` }}
+        < reviews
+          - grades
+      `;
+
+    res.render('index', {
+      title: `${product.name}`,
+      body: renderProduct(product)
+    });
+  } catch(err) {
     console.log(err);
     next();
-  });
+  }
 });
 
 module.exports = router;

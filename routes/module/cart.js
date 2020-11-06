@@ -16,7 +16,7 @@ router.get('/', isLoggedIn, async function (req, res, next) {
       FROM cart c, products p WHERE c.user_id = ${user_id} AND p.id = c.product_id ORDER BY created_at;`,
     (cart) =>
       res.render('index', {
-        title: '장바구니 | pual store',
+        title: '장바구니',
         body: renderMain(cart),
         pageScript: ['cart.js'],
       })
@@ -52,7 +52,7 @@ router.get('/checkout', isLoggedIn, async function (req, res, next) {
       const shipping_cost = total_prices > 100000 ? 0 : 3000;
 
       res.render('index', {
-        title: '주문 결제 | pual store',
+        title: '주문 결제',
         body: renderCheckout({ user, products, total_prices, shipping_cost }),
         pageScript: ['checkout.js']
       });
@@ -69,7 +69,7 @@ router.get('/order-placed', isLoggedIn, async function (req, res, next) {
   } = req;
 
   res.render('index', {
-    title: '주문완료 | pual store',
+    title: '주문완료',
     body: `
       <div>
         <div class="h1">주문완료</div>

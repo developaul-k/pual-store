@@ -6,7 +6,7 @@ const { renderChangeInfo } = require('../../template/user');
 const { verify } = require('../../verify');
 
 router.get('/info', isLoggedIn, function (req, res, next) {
-  res.render('index', { title: '회원정보 | pual store', body: '<div>회원정보</div>' });
+  res.render('index', { title: '회원정보', body: '<div>회원정보</div>' });
 });
 
 router.get('/changeInfo', isLoggedIn, function (req, res, next) {
@@ -18,7 +18,7 @@ router.get('/changeInfo', isLoggedIn, function (req, res, next) {
     }
   } = req
   res.render('index', {
-    title: '회원정보수정 | pual store',
+    title: '회원정보수정',
     body: renderChangeInfo({ address, phone, date_of_birth}),
     pageScript: ['user.js']
   });
