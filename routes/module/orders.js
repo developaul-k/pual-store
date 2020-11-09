@@ -6,12 +6,12 @@ const { isLoggedIn } = require('../../middlewares');
 const { renderMain } = require('../../template/orders');
 
 router.get('/:order_id', isLoggedIn, async function (req, res, next) {
-  const {
-    params: { order_id },
-    user
-  } = req;
-
   try {
+    const {
+      params: { order_id },
+      user
+    } = req;
+
     const orders = await ASSOCIATE1`
       orders ${{
         column: COLUMN('id', SQL`to_char(orders.created_at, 'YYYY-MM-DD HH:MM') as order_date`),

@@ -1,5 +1,6 @@
 const rangeL = require('fxjs/Lazy/rangeL');
 const { map, strMap } = require('fxjs/Strict');
+const { noDataTable } = require('../components/nodata');
 const { Button } = require('../components/utils');
 
 const renderMain = (cart) => {
@@ -47,7 +48,7 @@ const renderMain = (cart) => {
                 </tr>
               `,
               cart
-            )}
+            ) || noDataTable({ colspan: 5, text: '장바구니에 담긴 상품이 없습니다.' })}
           </tbody>
         </table>
         <div class="button-box">

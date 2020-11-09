@@ -1,12 +1,19 @@
 const express = require('express');
 const router = express.Router();
 const { go, map, reduce, add, split, find } = require('fxjs/Strict');
-const { QUERY, QUERY1, VALUES, SET, IN, TRANSACTION } = require('../../database');
+const {
+  QUERY,
+  QUERY1,
+  VALUES,
+  SET,
+  IN,
+  TRANSACTION,
+} = require('../../database');
 const { isLoggedIn } = require('../../middlewares');
 
 const { renderMain, renderCheckout } = require('../../template/cart');
 
-router.get('/', isLoggedIn, async function (req, res, next) {
+router.get('/', isLoggedIn, function (req, res, next) {
   const {
     user: { id: user_id },
   } = req;
@@ -26,7 +33,7 @@ router.get('/', isLoggedIn, async function (req, res, next) {
   });
 });
 
-router.get('/checkout', isLoggedIn, async function (req, res, next) {
+router.get('/checkout', isLoggedIn, function (req, res, next) {
   const {
     user,
     query: { products },
@@ -34,12 +41,18 @@ router.get('/checkout', isLoggedIn, async function (req, res, next) {
 
   if (!products) res.redirect('/cart');
 
-  const _products = map(split(':'), typeof products == 'string' ? [products] : products);
+  const _products = map(
+    split(':'),
+    typeof products == 'string' ? [products] : products
+  );
 
   const product_ids = map(([id, _]) => id, _products);
 
   go(
-    QUERY`SELECT id, image, price, name FROM products WHERE ${IN('id', product_ids)}`,
+    QUERY`SELECT id, image, price, name FROM products WHERE ${IN(
+      'id',
+      product_ids
+    )}`,
     map((product) =>
       go(
         _products,
@@ -48,13 +61,16 @@ router.get('/checkout', isLoggedIn, async function (req, res, next) {
       )
     ),
     (products) => {
-      const total_prices = reduce(add, map(({ price, amount }) => price * amount, products));
+      const total_prices = reduce(
+        add,
+        map(({ price, amount }) => price * amount, products)
+      );
       const shipping_cost = total_prices > 100000 ? 0 : 3000;
 
       res.render('index', {
         title: '주문 결제',
         body: renderCheckout({ user, products, total_prices, shipping_cost }),
-        pageScript: ['checkout.js']
+        pageScript: ['checkout.js'],
       });
     }
   ).catch((err) => {
@@ -75,7 +91,7 @@ router.get('/order-placed', isLoggedIn, async function (req, res, next) {
         <div class="h1">주문완료</div>
         <a href="/">홈으로</a>
       </div>
-    `
+    `,
   });
 });
 
@@ -88,9 +104,18 @@ router.post('/order-placed', isLoggedIn, async function (req, res, next) {
   const { QUERY, COMMIT, ROLLBACK } = await TRANSACTION();
 
   try {
-    const order = await QUERY1`INSERT INTO orders ${VALUES({ user_id })} RETURNING id`;
+    const order = await QUERY1`INSERT INTO orders ${VALUES({
+      user_id,
+    })} RETURNING id`;
 
-    const orders_products = map(([product_id, quantity]) => ({ order_id: order.id, product_id, quantity }), products);
+    const orders_products = map(
+      ([product_id, quantity]) => ({
+        order_id: order.id,
+        product_id,
+        quantity,
+      }),
+      products
+    );
 
     await QUERY`INSERT INTO orders_products ${VALUES(orders_products)}`;
     await QUERY`DELETE FROM cart WHERE user_id = ${user_id}`;
@@ -129,11 +154,11 @@ router.post('/add', isLoggedIn, async function (req, res, next) {
 });
 
 router.put('/update', isLoggedIn, async function (req, res, next) {
-  const {
-    body: { id, amount },
-  } = req;
-
   try {
+    const {
+      body: { id, amount },
+    } = req;
+
     await QUERY`UPDATE cart ${SET({ amount })} WHERE id = ${id}`;
     res.send({ redirectTo: '/cart' });
   } catch (err) {
@@ -143,11 +168,11 @@ router.put('/update', isLoggedIn, async function (req, res, next) {
 });
 
 router.delete('/delete', isLoggedIn, async function (req, res, next) {
-  const {
-    body: { cart_ids },
-  } = req;
-
   try {
+    const {
+      body: { cart_ids },
+    } = req;
+
     await QUERY`DELETE FROM cart WHERE ${IN('id', cart_ids)}`;
     res.send({ redirectTo: '/cart' });
   } catch (err) {

@@ -13,12 +13,14 @@
 <body>
   <% if (typeof username !== 'undefined') { %>
     <header class="header">
-      <a href="/">pual-store</a>
-      <div>
-        <%-username%> 님
-        <a href="/cart">장바구니</a>
-        <a href="/mypage">마이페이지</a>
-        <a href="/auth/signout">로그아웃</a>
+      <div class="header__inner">
+        <a href="/">pual-store</a>
+        <div>
+          <%-username%> 님
+          <a href="/cart">장바구니</a>
+          <a href="/mypage">마이페이지</a>
+          <a href="/auth/signout">로그아웃</a>
+        </div>
       </div>
     </header>
   <% } %>

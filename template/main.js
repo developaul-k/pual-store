@@ -4,7 +4,7 @@ const { productsItem } = require('../components/products');
 module.exports = ({ products }) => `
   <div class="contents">
     <h2 class="h2">신제품</h2>
-    <ul class="product-list">
+    <ul class="products">
       ${
         products.length
           ? strMap(productsItem, products)

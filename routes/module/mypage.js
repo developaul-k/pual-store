@@ -8,9 +8,9 @@ const { renderMain } = require('../../template/mypage');
 // FxSQL_DEBUG.LOG=true;
 
 router.get('/', isLoggedIn, async function (req, res, next) {
-  const { user: { id: user_id } } = req;
-
   try {
+    const { user: { id: user_id } } = req;
+
     const orders = await ASSOCIATE`
       orders ${{
         column: COLUMN('id', SQL`to_char(orders.created_at, 'YYYY-MM-DD HH:MM') as order_date`),

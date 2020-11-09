@@ -16,7 +16,8 @@ router.get('/changeInfo', isLoggedIn, function (req, res, next) {
       phone,
       date_of_birth
     }
-  } = req
+  } = req;
+
   res.render('index', {
     title: '회원정보수정',
     body: renderChangeInfo({ address, phone, date_of_birth}),
@@ -25,9 +26,9 @@ router.get('/changeInfo', isLoggedIn, function (req, res, next) {
 });
 
 router.post('/change-info', isLoggedIn, async function(req, res, next) {
-  const { user: { id }, body: { password, address, phone, date_of_birth } } = req
-
   try {
+    const { user: { id }, body: { password, address, phone, date_of_birth } } = req;
+
     const user = await QUERY1`SELECT password FROM users WHERE id = ${id}`;
 
     if (!await verify(password, user.password)) return res.send({ message: '비밀번호가 일치하지 않습니다.' });
